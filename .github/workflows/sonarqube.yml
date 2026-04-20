@@ -43,7 +43,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           npx -y sonar-scanner \
-            -Dsonar.projectKey=app-nutri-plan \
+            -Dsonar.projectKey=KaikeDias_NutriPlan \
             -Dsonar.organization=kaikedias \
             -Dsonar.sources=src \
             -Dsonar.host.url="$SONAR_HOST_URL" \
