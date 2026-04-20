@@ -14,6 +14,15 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.72.1(react@19.2.5))
+      '@maskito/core':
+        specifier: ^5.2.2
+        version: 5.2.2
+      '@maskito/kit':
+        specifier: ^5.2.2
+        version: 5.2.2(@maskito/core@5.2.2)
+      '@maskito/react':
+        specifier: ^5.2.2
+        version: 5.2.2(@maskito/core@5.2.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@tailwindcss/vite':
         specifier: ^4.2.1
         version: 4.2.2(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0))
@@ -23,6 +32,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      cpf-cnpj-validator:
+        specifier: ^2.1.0
+        version: 2.1.0(zod@4.3.6)
       html2canvas:
         specifier: ^1.4.1
         version: 1.4.1
@@ -32,6 +44,9 @@ importers:
       lucide-react:
         specifier: ^1.8.0
         version: 1.8.0(react@19.2.5)
+      maskito:
+        specifier: ^0.0.2
+        version: 0.0.2
       radix-ui:
         specifier: ^1.4.3
         version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -642,6 +657,21 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@maskito/core@5.2.2':
+    resolution: {integrity: sha512-OFLK9NMQrz4eCgNgJ74S4x6IklqGQ71pcQToNGRzkIYnlEZbGpO+pzLREKLN/iKh4oBz8PI/9JnD3HtkN5Rl+w==}
+
+  '@maskito/kit@5.2.2':
+    resolution: {integrity: sha512-ACuhzZ0EmMPBqi+RMbAqVPTMpQuhYVSBTLgBlyQppha1DurC4fN1fXL8MzHqbJbKiCbG2WELpl4mgyTgMcACIg==}
+    peerDependencies:
+      '@maskito/core': ^5.2.2
+
+  '@maskito/react@5.2.2':
+    resolution: {integrity: sha512-msI6RFuiWP/sFMvLkPF1e3Lihqzcox8xRZ4gnQESoQ23DOVlPL8MfpW10w5GFD859YGzKjW8LoGddxvRE9cAIA==}
+    peerDependencies:
+      '@maskito/core': ^5.2.2
+      react: '>=16.8'
+      react-dom: '>=16.8'
 
   '@modelcontextprotocol/sdk@1.29.0':
     resolution: {integrity: sha512-zo37mZA9hJWpULgkRpowewez1y6ML5GsXJPY8FI0tBBCd77HEvza4jDqRKOXgHNn867PVGCyTdzqpz0izu5ZjQ==}
@@ -2039,6 +2069,30 @@ packages:
       typescript:
         optional: true
 
+  cpf-cnpj-validator@2.1.0:
+    resolution: {integrity: sha512-tgSVKy8EK8LMRYRtoTfPICQ5innN0go/aqokEAF66HW466MHDsjBGkyPOY0KmCJ+k7Jh0CG9m70YHp30yiOCLg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@angular/forms': '>=15'
+      class-validator: ^0.14.0 || ^0.15.0
+      joi: ^17.0.0
+      reflect-metadata: ^0.2.0
+      yup: ^1.0.0
+      zod: ^3.22.0 || ^4.0.0
+    peerDependenciesMeta:
+      '@angular/forms':
+        optional: true
+      class-validator:
+        optional: true
+      joi:
+        optional: true
+      reflect-metadata:
+        optional: true
+      yup:
+        optional: true
+      zod:
+        optional: true
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -2844,6 +2898,9 @@ packages:
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
+
+  maskito@0.0.2:
+    resolution: {integrity: sha512-KC6bkGeWaQqCFdMUwrsr0VIR+qEIKQvjPiy/sj0BzI6FZMOk64T/ns3EF4PDzuF4DCsNQBqY9pceeDaK3BMdkg==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -4294,6 +4351,18 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@maskito/core@5.2.2': {}
+
+  '@maskito/kit@5.2.2(@maskito/core@5.2.2)':
+    dependencies:
+      '@maskito/core': 5.2.2
+
+  '@maskito/react@5.2.2(@maskito/core@5.2.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+    dependencies:
+      '@maskito/core': 5.2.2
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+
   '@modelcontextprotocol/sdk@1.29.0(zod@3.25.76)':
     dependencies:
       '@hono/node-server': 1.19.14(hono@4.12.14)
@@ -5733,6 +5802,10 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
+  cpf-cnpj-validator@2.1.0(zod@4.3.6):
+    optionalDependencies:
+      zod: 4.3.6
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -6520,6 +6593,8 @@ snapshots:
   make-dir@4.0.0:
     dependencies:
       semver: 7.7.4
+
+  maskito@0.0.2: {}
 
   math-intrinsics@1.1.0: {}
 
