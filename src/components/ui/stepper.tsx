@@ -27,34 +27,33 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
         />
 
         {/* Steps */}
-        {steps.map((step) => {
+        {steps.map((step, index) => {
           const isActive = step.id === currentStep;
           const isCompleted = step.id < currentStep;
           const Icon = step.icon;
 
           return (
-            <div key={step.id} className="flex flex-col items-center flex-1">
-              {/* Step circle */}
-              <button
-                onClick={() => onStepClick?.(step.id)}
-                className={cn(
-                  "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 relative z-10",
-                  isActive && "ring-4 ring-teal-500/30",
-                  isCompleted
-                    ? "bg-teal-600 text-white"
-                    : isActive
-                      ? "bg-teal-500 text-white"
-                      : "bg-gray-700 text-gray-400 hover:bg-gray-600"
-                )}
-              >
-                <Icon className="w-5 h-5" />
-              </button>
+            <div key={step.id} className="flex items-center flex-1">
+              {/* Step */}
+              <div className="flex flex-col items-center">
+                <button
+                  onClick={() => onStepClick?.(step.id)}
+                  className={cn(
+                    "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300",
+                    isActive && "ring-4 ring-teal-500/30",
+                    isCompleted
+                      ? "bg-teal-600 text-white"
+                      : isActive
+                        ? "bg-teal-500 text-white"
+                        : "bg-gray-700 text-gray-400"
+                  )}
+                >
+                  <Icon className="w-5 h-5" />
+                </button>
 
-              {/* Step label */}
-              <div className="mt-3 text-center">
                 <p
                   className={cn(
-                    "text-xs font-medium transition-colors duration-300",
+                    "mt-2 text-xs font-medium",
                     isActive
                       ? "text-teal-500"
                       : isCompleted
@@ -65,6 +64,16 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                   {step.label}
                 </p>
               </div>
+
+              {/* Linha ENTRE steps */}
+              {index < steps.length - 1 && (
+                <div
+                  className={cn(
+                    "flex-1 h-[2px] transition-all duration-300",
+                    step.id < currentStep ? "bg-teal-500" : "bg-gray-700"
+                  )}
+                />
+              )}
             </div>
           );
         })}

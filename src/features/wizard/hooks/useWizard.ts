@@ -1,52 +1,21 @@
 import { useEffect, useState } from "react";
-
-export type WizardData = {
-  professional : {
-    name: string;
-    crn: string;
-    document: string;
-    logo?: string;    
-  };
-  patient: {
-    name: string;
-    age: string;
-    weight: string;
-  };
-  diet: {
-    meals: {
-      name: string;
-      foods: {
-        name: string;
-        quantity: string;
-      }[];
-    }[];
-  };
-}
+import { defaultWizardStore, type WizardStore } from "../types/wizard-store";
 
 const STORAGE_KEY = "diet_wizard";
 
+function loadFromStorage(): WizardStore {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return { ...defaultWizardStore, ...JSON.parse(stored) };
+  } catch {
+    // ignore corrupt data
+  }
+  return defaultWizardStore;
+}
+
 export function useWizard() {
   const [step, setStep] = useState(1);
-
-  const [data, setData] = useState<WizardData>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {
-      professional: {
-        name: "",
-        crn: "",
-        document: "",
-        logo: ""
-      },
-      patient: {
-        name: "",
-        age: "",
-        weight: ""
-      },
-      diet: {
-        meals: []
-      }
-    };
-  });
+  const [data, setData] = useState<WizardStore>(loadFromStorage);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -60,18 +29,9 @@ export function useWizard() {
     setStep((prev) => Math.max(prev - 1, 1));
   }
 
-  function update<K extends keyof WizardData>(key: K, value: WizardData[K]) {
-    setData((prev) => ({
-      ...prev,
-      [key]: value
-    }));
+  function updateSection<K extends keyof WizardStore>(key: K, value: WizardStore[K]) {
+    setData((prev) => ({ ...prev, [key]: value }));
   }
 
-  return {
-    step,
-    data,
-    next,
-    prev,
-    update
-  };
+  return { step, data, next, prev, updateSection };
 }
