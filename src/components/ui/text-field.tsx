@@ -1,10 +1,10 @@
-import { forwardRef } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "./label";
+import { forwardRef } from "react"
+import { Input } from "@/components/ui/input"
+import { Label } from "./label"
 
 interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  error?: string;
+  label: string
+  error?: string
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -19,10 +19,10 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           className={`mb-1 h-10 ${error ? "border-destructive" : ""} ${className}`}
           {...rest}
         />
-        {error && <p className="text-sm text-destructive mb-2">{error}</p>}
+        {error && <p className="mb-2 text-sm text-destructive">{error}</p>}
       </div>
-    );
+    )
   }
-);
+)
 
-TextField.displayName = "TextField";
+TextField.displayName = "TextField"

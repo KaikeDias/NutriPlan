@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export const professionalProfileSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -11,27 +11,27 @@ export const professionalProfileSchema = z.object({
       (val) => !val || val.length <= 2_000_000,
       "Imagem muito grande (máx. ~1.5MB)"
     ),
-});
+})
 
-export type ProfessionalProfileData = z.infer<typeof professionalProfileSchema>;
+export type ProfessionalProfileData = z.infer<typeof professionalProfileSchema>
 
 export type WizardStore = {
-  professional: ProfessionalProfileData;
+  professional: ProfessionalProfileData
   patient: {
-    name: string;
-    age: string;
-    weight: string;
-  };
+    name: string
+    age: string
+    weight: string
+  }
   diet: {
     meals: {
-      name: string;
-      foods: { name: string; quantity: string }[];
-    }[];
-  };
-};
+      name: string
+      foods: { name: string; quantity: string }[]
+    }[]
+  }
+}
 
 export const defaultWizardStore: WizardStore = {
   professional: { name: "", crn: "", document: "", logo: "" },
   patient: { name: "", age: "", weight: "" },
   diet: { meals: [] },
-};
+}
