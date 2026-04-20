@@ -8,7 +8,7 @@ import { useWizardContext } from "../context/wizard-context"
 import {
   professionalProfileSchema,
   type ProfessionalProfileData,
-} from "../types/wizard-store"
+} from "../types/wizard-schema"
 
 export function ProfessionalProfileStep() {
   const { data, updateSection, next } = useWizardContext()

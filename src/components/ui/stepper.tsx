@@ -13,7 +13,35 @@ interface StepperProps {
   onStepClick?: (step: number) => void
 }
 
-export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
+function getStepButtonClass(isActive: boolean, isCompleted: boolean): string {
+  if (isCompleted) {
+    return "bg-teal-600 text-white"
+  }
+
+  if (isActive) {
+    return "bg-teal-500 text-white"
+  }
+
+  return "bg-gray-700 text-gray-400"
+}
+
+function getStepLabelClass(isActive: boolean, isCompleted: boolean): string {
+  if (isActive) {
+    return "text-teal-500"
+  }
+
+  if (isCompleted) {
+    return "text-teal-600"
+  }
+
+  return "text-gray-500"
+}
+
+export function Stepper({
+  steps,
+  currentStep,
+  onStepClick,
+}: Readonly<StepperProps>) {
   const stepsCount = steps.length
   const edgeInsetPercent = stepsCount > 0 ? 100 / (stepsCount * 2) : 0
   const progressRatio =
@@ -51,11 +79,7 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300",
                     isActive && "ring-4 ring-teal-500/30",
-                    isCompleted
-                      ? "bg-teal-600 text-white"
-                      : isActive
-                        ? "bg-teal-500 text-white"
-                        : "bg-gray-700 text-gray-400"
+                    getStepButtonClass(isActive, isCompleted)
                   )}
                 >
                   <Icon className="h-5 w-5" />
@@ -64,11 +88,7 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                 <p
                   className={cn(
                     "mt-2 text-xs font-medium",
-                    isActive
-                      ? "text-teal-500"
-                      : isCompleted
-                        ? "text-teal-600"
-                        : "text-gray-500"
+                    getStepLabelClass(isActive, isCompleted)
                   )}
                 >
                   {step.label}

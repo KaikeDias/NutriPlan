@@ -17,7 +17,7 @@ type ThemeProviderState = {
 }
 
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
-const THEME_VALUES: Theme[] = ["dark", "light", "system"]
+const THEME_VALUES = new Set<Theme>(["dark", "light", "system"])
 
 const ThemeProviderContext = React.createContext<
   ThemeProviderState | undefined
@@ -28,11 +28,11 @@ function isTheme(value: string | null): value is Theme {
     return false
   }
 
-  return THEME_VALUES.includes(value as Theme)
+  return THEME_VALUES.has(value as Theme)
 }
 
 function getSystemTheme(): ResolvedTheme {
-  if (window.matchMedia(COLOR_SCHEME_QUERY).matches) {
+  if (globalThis.matchMedia(COLOR_SCHEME_QUERY).matches) {
     return "dark"
   }
 
@@ -49,7 +49,7 @@ function disableTransitionsTemporarily() {
   document.head.appendChild(style)
 
   return () => {
-    window.getComputedStyle(document.body)
+    globalThis.getComputedStyle(document.body)
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         style.remove()
@@ -77,13 +77,25 @@ function isEditableTarget(target: EventTarget | null) {
   return false
 }
 
+function getNextTheme(currentTheme: Theme): Theme {
+  if (currentTheme === "dark") {
+    return "light"
+  }
+
+  if (currentTheme === "light") {
+    return "dark"
+  }
+
+  return getSystemTheme() === "dark" ? "light" : "dark"
+}
+
 export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "theme",
   disableTransitionOnChange = true,
   ...props
-}: ThemeProviderProps) {
+}: Readonly<ThemeProviderProps>) {
   const [theme, setThemeState] = React.useState<Theme>(() => {
     const storedTheme = localStorage.getItem(storageKey)
     if (isTheme(storedTheme)) {
@@ -127,7 +139,7 @@ export function ThemeProvider({
       return undefined
     }
 
-    const mediaQuery = window.matchMedia(COLOR_SCHEME_QUERY)
+    const mediaQuery = globalThis.matchMedia(COLOR_SCHEME_QUERY)
     const handleChange = () => {
       applyTheme("system")
     }
@@ -158,24 +170,16 @@ export function ThemeProvider({
       }
 
       setThemeState((currentTheme) => {
-        const nextTheme =
-          currentTheme === "dark"
-            ? "light"
-            : currentTheme === "light"
-              ? "dark"
-              : getSystemTheme() === "dark"
-                ? "light"
-                : "dark"
-
+        const nextTheme = getNextTheme(currentTheme)
         localStorage.setItem(storageKey, nextTheme)
         return nextTheme
       })
     }
 
-    window.addEventListener("keydown", handleKeyDown)
+    globalThis.addEventListener("keydown", handleKeyDown)
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown)
+      globalThis.removeEventListener("keydown", handleKeyDown)
     }
   }, [storageKey])
 
@@ -197,10 +201,10 @@ export function ThemeProvider({
       setThemeState(defaultTheme)
     }
 
-    window.addEventListener("storage", handleStorageChange)
+    globalThis.addEventListener("storage", handleStorageChange)
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange)
+      globalThis.removeEventListener("storage", handleStorageChange)
     }
   }, [defaultTheme, storageKey])
 
