@@ -1,45 +1,55 @@
-import type { LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export interface StepperStep {
-  id: number;
-  label: string;
-  icon: LucideIcon;
+  id: number
+  label: string
+  icon: LucideIcon
 }
 
 interface StepperProps {
-  steps: StepperStep[];
-  currentStep: number;
-  onStepClick?: (step: number) => void;
+  steps: StepperStep[]
+  currentStep: number
+  onStepClick?: (step: number) => void
 }
 
 export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
+  const stepsCount = steps.length
+  const edgeInsetPercent = stepsCount > 0 ? 100 / (stepsCount * 2) : 0
+  const progressRatio =
+    stepsCount > 1 ? (currentStep - 1) / (stepsCount - 1) : 0
+
   return (
-    <div className="w-full mb-12 px-4">
-      {/* Background connecting line */}
-      <div className="flex items-center justify-between relative">
-        <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-800 -z-10" />
+    <div className="mb-10 px-4">
+      <div className="relative mx-auto w-full max-w-3xl">
+        {/* Track between the center of first and last step */}
         <div
-          className="absolute top-6 left-0 h-0.5 bg-teal-500 -z-10 transition-all duration-300"
+          className="absolute top-6 h-0.5 bg-gray-800"
           style={{
-            width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
+            left: `${edgeInsetPercent}%`,
+            right: `${edgeInsetPercent}%`,
+          }}
+        />
+        <div
+          className="absolute top-6 h-0.5 bg-teal-500 transition-all duration-300"
+          style={{
+            left: `${edgeInsetPercent}%`,
+            width: `${(100 - edgeInsetPercent * 2) * progressRatio}%`,
           }}
         />
 
-        {/* Steps */}
-        {steps.map((step, index) => {
-          const isActive = step.id === currentStep;
-          const isCompleted = step.id < currentStep;
-          const Icon = step.icon;
+        <div className="relative z-10 flex items-start justify-between">
+          {steps.map((step) => {
+            const isActive = step.id === currentStep
+            const isCompleted = step.id < currentStep
+            const Icon = step.icon
 
-          return (
-            <div key={step.id} className="flex items-center flex-1">
-              {/* Step */}
-              <div className="flex flex-col items-center">
+            return (
+              <div key={step.id} className="flex flex-1 flex-col items-center">
                 <button
                   onClick={() => onStepClick?.(step.id)}
                   className={cn(
-                    "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300",
+                    "flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300",
                     isActive && "ring-4 ring-teal-500/30",
                     isCompleted
                       ? "bg-teal-600 text-white"
@@ -48,7 +58,7 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                         : "bg-gray-700 text-gray-400"
                   )}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="h-5 w-5" />
                 </button>
 
                 <p
@@ -64,20 +74,10 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                   {step.label}
                 </p>
               </div>
-
-              {/* Linha ENTRE steps */}
-              {index < steps.length - 1 && (
-                <div
-                  className={cn(
-                    "flex-1 h-[2px] transition-all duration-300",
-                    step.id < currentStep ? "bg-teal-500" : "bg-gray-700"
-                  )}
-                />
-              )}
-            </div>
-          );
-        })}
+            )
+          })}
+        </div>
       </div>
     </div>
-  );
+  )
 }
