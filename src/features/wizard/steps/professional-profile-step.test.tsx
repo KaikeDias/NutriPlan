@@ -39,9 +39,6 @@ describe("ProfessionalProfileStep", () => {
     renderStep(makeContext())
     expect(screen.getByLabelText(/Nome completo/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/CRN/i)).toBeInTheDocument()
-    expect(
-      screen.getByLabelText(/Documento de identificação/i)
-    ).toBeInTheDocument()
   })
 
   it("renders the submit button", () => {
@@ -56,7 +53,6 @@ describe("ProfessionalProfileStep", () => {
     await waitFor(() => {
       expect(screen.getByText("Nome é obrigatório")).toBeInTheDocument()
       expect(screen.getByText("CRN é obrigatório")).toBeInTheDocument()
-      expect(screen.getByText("Documento é obrigatório")).toBeInTheDocument()
     })
   })
 
@@ -76,11 +72,7 @@ describe("ProfessionalProfileStep", () => {
     renderStep(ctx)
 
     await user.type(screen.getByLabelText(/Nome completo/i), "Ana Lima")
-    await user.type(screen.getByLabelText(/CRN/i), "CRN-3/12345")
-    await user.type(
-      screen.getByLabelText(/Documento de identificação/i),
-      "123.456.789-00"
-    )
+    await user.type(screen.getByLabelText(/CRN/i), "CRN-11/12345")
     await user.click(screen.getByRole("button", { name: /Próximo/i }))
 
     await waitFor(() => expect(ctx.next).toHaveBeenCalledOnce())
@@ -88,8 +80,7 @@ describe("ProfessionalProfileStep", () => {
       "professional",
       expect.objectContaining({
         name: "Ana Lima",
-        crn: "CRN-3/12345",
-        document: "123.456.789-00",
+        crn: "CRN-11/12345",
       })
     )
   })
@@ -100,7 +91,6 @@ describe("ProfessionalProfileStep", () => {
       professional: {
         name: "João Silva",
         crn: "CRN-1/99",
-        document: "987.654.321-00",
         logo: "",
       },
     }
@@ -111,9 +101,5 @@ describe("ProfessionalProfileStep", () => {
     expect(screen.getByLabelText<HTMLInputElement>(/CRN/i).value).toBe(
       "CRN-1/99"
     )
-    expect(
-      screen.getByLabelText<HTMLInputElement>(/Documento de identificação/i)
-        .value
-    ).toBe("987.654.321-00")
   })
 })
