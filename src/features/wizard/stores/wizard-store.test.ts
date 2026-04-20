@@ -6,7 +6,6 @@ describe("defaultWizardStore", () => {
     expect(defaultWizardStore.professional).toEqual({
       name: "",
       crn: "",
-      document: "",
       logo: "",
     })
   })

@@ -5,7 +5,6 @@ describe("professionalProfileSchema", () => {
   const valid = {
     name: "Ana Lima",
     crn: "CRN-3/12345",
-    document: "123.456.789-00",
   }
 
   it("accepts valid data without a logo", () => {
@@ -39,19 +38,6 @@ describe("professionalProfileSchema", () => {
     }
   })
 
-  it("rejects when document is empty", () => {
-    const result = professionalProfileSchema.safeParse({
-      ...valid,
-      document: "",
-    })
-    expect(result.success).toBe(false)
-    if (!result.success) {
-      expect(result.error.flatten().fieldErrors.document).toContain(
-        "Documento é obrigatório"
-      )
-    }
-  })
-
   it("rejects a logo that exceeds 2_000_000 characters", () => {
     const logo = "a".repeat(2_000_001)
     const result = professionalProfileSchema.safeParse({ ...valid, logo })
@@ -69,5 +55,41 @@ describe("professionalProfileSchema", () => {
       logo: undefined,
     })
     expect(result.success).toBe(true)
+  })
+
+  // ─── CRN validation ────────────────────────────────────────────────────────
+
+  it("accepts a 2-digit region CRN", () => {
+    const result = professionalProfileSchema.safeParse({
+      ...valid,
+      crn: "CRN-11/12345",
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it("rejects a CRN without the standard format", () => {
+    const result = professionalProfileSchema.safeParse({
+      ...valid,
+      crn: "12345",
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.crn).toContain(
+        "Formato inválido. Ex: CRN-11/12345"
+      )
+    }
+  })
+
+  it("rejects a CRN missing the dash", () => {
+    const result = professionalProfileSchema.safeParse({
+      ...valid,
+      crn: "CRN3/12345",
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.crn).toContain(
+        "Formato inválido. Ex: CRN-11/12345"
+      )
+    }
   })
 })

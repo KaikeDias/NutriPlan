@@ -1,5 +1,6 @@
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMaskito } from "@maskito/react"
 import { Label } from "@/components/ui/label"
 import { TextField } from "@/components/ui/text-field"
 import { Button } from "@/components/ui/button"
@@ -9,9 +10,12 @@ import {
   type ProfessionalProfileData,
 } from "@/features/wizard/types/wizard-schema"
 import { LogoUpload } from "@/features/wizard/components/logo-upload"
+import { crnMaskOptions } from "@/lib/masks"
 
 export default function ProfessionalProfileStep() {
   const { data, updateSection, next } = useWizardContext()
+
+  const crnMaskRef = useMaskito({ options: crnMaskOptions })
 
   const {
     register,
@@ -39,21 +43,23 @@ export default function ProfessionalProfileStep() {
           error={errors.name?.message}
           {...register("name")}
         />
-        <TextField
-          id="crn"
-          label="CRN"
-          placeholder="CRN-0/0000"
-          error={errors.crn?.message}
-          {...register("crn")}
+        <Controller
+          control={control}
+          name="crn"
+          render={({ field: { ref, ...field } }) => (
+            <TextField
+              ref={(el) => {
+                ref(el)
+                crnMaskRef(el)
+              }}
+              id="crn"
+              label="CRN"
+              placeholder="CRN-0/00000"
+              error={errors.crn?.message}
+              {...field}
+            />
+          )}
         />
-        <TextField
-          id="document"
-          label="Documento de identificação"
-          placeholder="000.000.000-00"
-          error={errors.document?.message}
-          {...register("document")}
-        />
-
         <div className="space-y-3">
           <Label>Logo Personalizada</Label>
           <Controller

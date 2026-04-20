@@ -16,7 +16,7 @@ export type WizardStore = {
 }
 
 export const defaultWizardStore: WizardStore = {
-  professional: { name: "", crn: "", document: "", logo: "" },
+  professional: { name: "", crn: "", logo: "" },
   patient: { name: "", age: "", weight: "" },
   diet: { meals: [] },
 }
