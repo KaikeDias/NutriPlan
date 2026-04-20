@@ -8,7 +8,11 @@ interface LogoUploadProps {
   error?: string
 }
 
-export function LogoUpload({ value, onChange, error }: Readonly<LogoUploadProps>) {
+export function LogoUpload({
+  value,
+  onChange,
+  error,
+}: Readonly<LogoUploadProps>) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
