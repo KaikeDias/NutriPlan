@@ -44,6 +44,7 @@ jobs:
         run: |
           npx -y sonar-scanner \
             -Dsonar.projectKey=app-nutri-plan \
+            -Dsonar.organization=kaikedias \
             -Dsonar.sources=src \
             -Dsonar.host.url="$SONAR_HOST_URL" \
             -Dsonar.login="$SONAR_TOKEN" \
