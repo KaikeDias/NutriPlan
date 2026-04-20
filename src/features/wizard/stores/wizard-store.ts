@@ -1,4 +1,4 @@
-import type { ProfessionalProfileData } from "../types/wizard-schema"
+import type { ProfessionalProfileData } from "@/features/wizard/types/wizard-schema"
 
 export type WizardStore = {
   professional: ProfessionalProfileData

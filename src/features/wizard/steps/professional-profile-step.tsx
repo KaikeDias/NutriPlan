@@ -3,14 +3,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Label } from "@/components/ui/label"
 import { TextField } from "@/components/ui/text-field"
 import { Button } from "@/components/ui/button"
-import { LogoUpload } from "../components/LogoUpload"
-import { useWizardContext } from "../context/wizard-context"
+import { useWizardContext } from "@/features/wizard/context/wizard-context"
 import {
   professionalProfileSchema,
   type ProfessionalProfileData,
-} from "../types/wizard-schema"
+} from "@/features/wizard/types/wizard-schema"
+import { LogoUpload } from "@/features/wizard/components/logo-upload"
 
-export function ProfessionalProfileStep() {
+export default function ProfessionalProfileStep() {
   const { data, updateSection, next } = useWizardContext()
 
   const {

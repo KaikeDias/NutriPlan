@@ -1,11 +1,13 @@
 import { createContext, useContext } from "react"
-import { useWizard } from "../hooks/useWizard"
+import { useWizard } from "@/features/wizard/hooks/useWizard"
 
 export type WizardContextType = ReturnType<typeof useWizard>
 
 export const WizardContext = createContext<WizardContextType | null>(null)
 
-export function WizardProvider({ children }: Readonly<{ children: React.ReactNode }>) {
+export function WizardProvider({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const wizard = useWizard()
 
   return (

@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
-import { defaultWizardStore, type WizardStore } from "../types/wizard-store"
+import {
+  defaultWizardStore,
+  type WizardStore,
+} from "@/features/wizard/stores/wizard-store"
 
 const STORAGE_KEY = "diet_wizard"
 
