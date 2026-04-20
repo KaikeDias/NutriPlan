@@ -1,27 +1,27 @@
 import { describe, it, expect } from "vitest"
 import {
-  cpfMaskTransformer,
   crnMaskTransformer,
-  cnpjMaskTransformer,
+  crnPreprocessor,
+  crnMaskOptions,
 } from "@/lib/masks"
+import type { MaskitoOptions } from "@maskito/core"
 
-describe("cpfMaskTransformer", () => {
-  it("formats 11 raw digits as CPF", () => {
-    expect(cpfMaskTransformer("52998224725")).toBe("529.982.247-25")
-  })
+// ─── helpers ─────────────────────────────────────────────────────────────────
 
-  it("preserves already-formatted CPF", () => {
-    expect(cpfMaskTransformer("529.982.247-25")).toBe("529.982.247-25")
-  })
+function makeState(value: string, cursor: number) {
+  return { value, selection: [cursor, cursor] as [number, number] }
+}
 
-  it("partially formats an incomplete CPF", () => {
-    expect(cpfMaskTransformer("529982")).toBe("529.982")
-  })
+function crnDynamicMask(value: string) {
+  const maskFn = (
+    crnMaskOptions as MaskitoOptions & {
+      mask: (state: { value: string }) => unknown
+    }
+  ).mask
+  return maskFn({ value })
+}
 
-  it("strips extra digits beyond 11", () => {
-    expect(cpfMaskTransformer("529982247251")).toBe("529.982.247-25")
-  })
-})
+// ─── crnMaskTransformer ───────────────────────────────────────────────────────
 
 describe("crnMaskTransformer", () => {
   it("formats a 2-digit region CRN", () => {
@@ -37,20 +37,76 @@ describe("crnMaskTransformer", () => {
   })
 })
 
-describe("cnpjMaskTransformer", () => {
-  it("formats 14 raw digits as CNPJ", () => {
-    expect(cnpjMaskTransformer("11222333000181")).toBe("11.222.333/0001-81")
+// ─── crnPreprocessor ─────────────────────────────────────────────────────────
+
+describe("crnPreprocessor", () => {
+  it("returns state unchanged for actionType deleteBackward", () => {
+    const state = makeState("CRN-1", 5)
+    const result = crnPreprocessor(
+      { elementState: state, data: "/" },
+      "deleteBackward"
+    )
+    expect(result).toEqual({ elementState: state, data: "/" })
   })
 
-  it("preserves already-formatted CNPJ", () => {
-    expect(cnpjMaskTransformer("11.222.333/0001-81")).toBe("11.222.333/0001-81")
+  it("returns state unchanged for actionType deleteForward", () => {
+    const state = makeState("CRN-1", 5)
+    const result = crnPreprocessor(
+      { elementState: state, data: "/" },
+      "deleteForward"
+    )
+    expect(result).toEqual({ elementState: state, data: "/" })
   })
 
-  it("partially formats an incomplete CNPJ", () => {
-    expect(cnpjMaskTransformer("11222333")).toBe("11.222.333")
+  it("returns state unchanged for actionType validation", () => {
+    const state = makeState("CRN-1", 5)
+    const result = crnPreprocessor(
+      { elementState: state, data: "/" },
+      "validation"
+    )
+    expect(result).toEqual({ elementState: state, data: "/" })
   })
 
-  it("strips extra digits beyond 14", () => {
-    expect(cnpjMaskTransformer("112223330001819")).toBe("11.222.333/0001-81")
+  it("returns state unchanged when data is not '/'", () => {
+    const state = makeState("CRN-1", 5)
+    const result = crnPreprocessor({ elementState: state, data: "#" }, "insert")
+    expect(result).toEqual({ elementState: state, data: "#" })
+  })
+
+  it("returns state unchanged when selection[0] is not 5", () => {
+    const state = makeState("CRN-1", 3)
+    const result = crnPreprocessor({ elementState: state, data: "/" }, "insert")
+    expect(result).toEqual({ elementState: state, data: "/" })
+  })
+
+  it("returns state unchanged when value.length is not 5", () => {
+    const state = makeState("CRN-", 5)
+    const result = crnPreprocessor({ elementState: state, data: "/" }, "insert")
+    expect(result).toEqual({ elementState: state, data: "/" })
+  })
+
+  it("inserts '/' and advances cursor when all conditions match", () => {
+    const state = makeState("CRN-3", 5)
+    const result = crnPreprocessor({ elementState: state, data: "/" }, "insert")
+    expect(result).toEqual({
+      elementState: { value: "CRN-3/", selection: [6, 6] },
+      data: "",
+    })
+  })
+})
+
+// ─── crnMaskOptions dynamic mask ─────────────────────────────────────────────
+
+describe("crnMaskOptions dynamic mask", () => {
+  it("returns 1-digit region mask when value[5] is '/'", () => {
+    const mask = crnDynamicMask("CRN-3/1")
+    // 1-digit mask has 11 entries: C R N - \d / \d \d \d \d \d
+    expect((mask as unknown[]).length).toBe(11)
+  })
+
+  it("returns 2-digit region mask when value[5] is not '/'", () => {
+    const mask = crnDynamicMask("CRN-11")
+    // 2-digit mask has 12 entries: C R N - \d \d / \d \d \d \d \d
+    expect((mask as unknown[]).length).toBe(12)
   })
 })
