@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { professionalProfileSchema } from "@/features/wizard/types/wizard-schema"
+import { professionalProfileSchema } from "@/features/wizard/schemas/wizard-schema"
 
 describe("professionalProfileSchema", () => {
   const valid = {

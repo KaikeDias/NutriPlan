@@ -2,10 +2,10 @@ import { FileText, User, Users, Utensils } from "lucide-react"
 
 import { Stepper, type StepperStep } from "@/components/ui/stepper"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { useWizardContext } from "@/features/wizard/context/wizard-context"
 import ProfessionalProfileStep from "@/features/wizard/steps/professional-profile-step"
 import PlaceholderStep from "@/features/wizard/components/place-holder-step"
+import { PatientProfileStep } from "../steps/patient-profile-step"
 
 const STEPS: StepperStep[] = [
   { id: 1, label: "Perfil Profissional", icon: User },
@@ -15,18 +15,18 @@ const STEPS: StepperStep[] = [
 ]
 
 export default function WizardContent() {
-  const { step, prev } = useWizardContext()
+  const { step } = useWizardContext()
 
   function renderStep() {
     switch (step) {
       case 1:
         return <ProfessionalProfileStep />
       case 2:
-        return <PlaceholderStep label="Dados do Paciente" />
+        return <PatientProfileStep />
       case 3:
         return <PlaceholderStep label="Elaboração da Dieta" />
       case 4:
-        return <PlaceholderStep label="Exportação" />
+        return <PlaceholderStep label="Exportação" showNext={false} />
     }
   }
 
@@ -41,19 +41,6 @@ export default function WizardContent() {
           </h2>
 
           {renderStep()}
-
-          {step > 1 && (
-            <div className="flex justify-start pt-2">
-              <Button
-                type="button"
-                onClick={prev}
-                variant="outline"
-                className="border-gray-700"
-              >
-                Anterior
-              </Button>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

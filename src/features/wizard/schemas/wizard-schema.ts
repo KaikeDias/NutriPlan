@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { PATIENT_GOAL_VALUES } from "../types/patient-goal"
 
 export const professionalProfileSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -16,3 +17,13 @@ export const professionalProfileSchema = z.object({
 })
 
 export type ProfessionalProfileData = z.infer<typeof professionalProfileSchema>
+
+export const patientProfileSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  age: z.number().int().positive("Idade deve ser um número inteiro positivo"),
+  weight: z.number().positive("Peso deve ser um número positivo"),
+  goal: z.enum(PATIENT_GOAL_VALUES),
+  observations: z.string().optional(),
+})
+
+export type PatientProfileData = z.infer<typeof patientProfileSchema>

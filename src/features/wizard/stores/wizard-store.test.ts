@@ -13,8 +13,10 @@ describe("defaultWizardStore", () => {
   it("has an empty patient section", () => {
     expect(defaultWizardStore.patient).toEqual({
       name: "",
-      age: "",
-      weight: "",
+      age: 0,
+      weight: 0,
+      goal: "OTHER",
+      observations: "",
     })
   })
 
