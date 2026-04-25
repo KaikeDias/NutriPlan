@@ -1,12 +1,11 @@
-import type { ProfessionalProfileData } from "@/features/wizard/types/wizard-schema"
+import type {
+  PatientProfileData,
+  ProfessionalProfileData,
+} from "@/features/wizard/schemas/wizard-schema"
 
 export type WizardStore = {
   professional: ProfessionalProfileData
-  patient: {
-    name: string
-    age: string
-    weight: string
-  }
+  patient: PatientProfileData
   diet: {
     meals: {
       name: string
@@ -17,6 +16,12 @@ export type WizardStore = {
 
 export const defaultWizardStore: WizardStore = {
   professional: { name: "", crn: "", logo: "" },
-  patient: { name: "", age: "", weight: "" },
+  patient: {
+    name: "",
+    age: 0,
+    weight: 0,
+    goal: "OTHER",
+    observations: "",
+  },
   diet: { meals: [] },
 }

@@ -8,7 +8,7 @@ import { useWizardContext } from "@/features/wizard/context/wizard-context"
 import {
   professionalProfileSchema,
   type ProfessionalProfileData,
-} from "@/features/wizard/types/wizard-schema"
+} from "@/features/wizard/schemas/wizard-schema"
 import { LogoUpload } from "@/features/wizard/components/logo-upload"
 import { crnMaskOptions } from "@/lib/masks"
 
@@ -27,7 +27,7 @@ export default function ProfessionalProfileStep() {
     defaultValues: data.professional,
   })
 
-  function onSubmit(values: ProfessionalProfileData) {
+  const onSubmit = (values: ProfessionalProfileData) => {
     updateSection("professional", values)
     next()
   }
