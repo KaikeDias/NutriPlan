@@ -119,7 +119,7 @@ export function PatientProfileStep() {
             id="observations"
             placeholder="Ex: alergias, restrições alimentares, rotina"
             {...register("observations")}
-            maxLength={500}
+            maxLength={1000}
           />
         </div>
 

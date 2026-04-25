@@ -20,10 +20,10 @@ export type ProfessionalProfileData = z.infer<typeof professionalProfileSchema>
 
 export const patientProfileSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório").max(100, "Nome não pode ter mais de 100 caracteres"),
-  age: z.number().int().positive("Idade deve ser um número inteiro positivo"),
-  weight: z.number().positive("Peso deve ser um número positivo"),
+  age: z.number().int().positive("Idade deve ser um número inteiro positivo").max(100, "Idade não pode ser maior que 100"),
+  weight: z.number().positive("Peso deve ser um número positivo").max(400, "Peso não pode ser maior que 400"),
   goal: z.enum(PATIENT_GOAL_VALUES),
-  observations: z.string().optional(),
+  observations: z.string().max(1000, "Observações não podem ter mais de 1000 caracteres").optional(),
 })
 
 export type PatientProfileData = z.infer<typeof patientProfileSchema>
