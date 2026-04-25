@@ -49,6 +49,7 @@ export function PatientProfileStep() {
           id="name"
           label="Nome completo"
           placeholder="Nome Completo"
+          maxLength={100}
           error={errors.name?.message}
           {...register("name")}
         />
@@ -57,6 +58,7 @@ export function PatientProfileStep() {
           id="age"
           type="number"
           min={1}
+          max={100}
           label="Idade"
           placeholder="Ex: 30"
           error={errors.age?.message}
@@ -67,6 +69,7 @@ export function PatientProfileStep() {
           id="weight"
           type="number"
           min={0.1}
+          max={400}
           step="0.1"
           label="Peso (kg)"
           placeholder="Ex: 72.5"
@@ -116,6 +119,7 @@ export function PatientProfileStep() {
             id="observations"
             placeholder="Ex: alergias, restrições alimentares, rotina"
             {...register("observations")}
+            maxLength={500}
           />
         </div>
 
