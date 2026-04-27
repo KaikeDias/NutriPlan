@@ -87,7 +87,7 @@ export function PatientProfileStep() {
                 <SelectTrigger
                   id="objective"
                   aria-invalid={!!errors.goal}
-                  className="h-11 border-gray-700 bg-gray-800/60 text-gray-100 data-[placeholder]:text-gray-400"
+                  className="h-11 border-gray-700 bg-gray-800/60 text-gray-100 data-placeholder:text-gray-400"
                 >
                   <SelectValue placeholder="Selecione o objetivo" />
                 </SelectTrigger>
