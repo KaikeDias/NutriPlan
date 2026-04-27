@@ -157,7 +157,9 @@ describe("DietCreationStep", () => {
 
   it("adds a new meal and calls updateSection", async () => {
     const user = userEvent.setup()
-    vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue("meal-123")
+    vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
+      "123e4567-e89b-12d3-a456-426614174000"
+    )
     const ctx = makeContext()
 
     renderStep(ctx)
@@ -168,7 +170,7 @@ describe("DietCreationStep", () => {
     expect(ctx.updateSection).toHaveBeenCalledWith("diet", {
       meals: [
         {
-          id: "meal-123",
+          id: "123e4567-e89b-12d3-a456-426614174000",
           name: "Nova refeição",
           time: "08:00",
           foods: "Frutas",
