@@ -7,6 +7,7 @@ import ProfessionalProfileStep from "@/features/wizard/steps/professional-profil
 import PlaceholderStep from "@/features/wizard/components/place-holder-step"
 import PatientProfileStep from "../steps/patient-profile-step"
 import DietCreationStep from "../steps/diet-creation-step"
+import ExportDietStep from "../steps/export-diet-step"
 
 const STEPS: StepperStep[] = [
   { id: 1, label: "Perfil Profissional", icon: User },
@@ -27,7 +28,7 @@ export default function WizardContent() {
       case 3:
         return <DietCreationStep />
       case 4:
-        return <PlaceholderStep label="Exportação" showNext={false} />
+        return <ExportDietStep />
     }
   }
 
