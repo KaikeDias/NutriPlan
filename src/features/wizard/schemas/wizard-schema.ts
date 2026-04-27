@@ -27,3 +27,12 @@ export const patientProfileSchema = z.object({
 })
 
 export type PatientProfileData = z.infer<typeof patientProfileSchema>
+
+export const mealSchema = z.object({
+  name: z.string().min(1, "Nome da refeição é obrigatório").max(100, "Nome da refeição não pode ter mais de 100 caracteres"),
+  time: z.string().min(1, "Horário é obrigatório").regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Formato de horário inválido. Use HH:mm"),
+  foods: z.string().min(1, "Alimentos são obrigatórios").max(1000, "Alimentos não podem ter mais de 1000 caracteres"),
+})
+
+export type MealData = z.infer<typeof mealSchema>
+
