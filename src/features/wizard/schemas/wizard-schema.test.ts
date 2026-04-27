@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest"
-import { professionalProfileSchema, patientProfileSchema } from "@/features/wizard/schemas/wizard-schema"
+import {
+  professionalProfileSchema,
+  patientProfileSchema,
+  mealSchema,
+} from "@/features/wizard/schemas/wizard-schema"
 import { PATIENT_GOAL_VALUES } from "@/features/wizard/types/patient-goal"
 
 describe("professionalProfileSchema", () => {
@@ -336,6 +340,79 @@ describe("patientProfileSchema", () => {
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors
       expect(Object.keys(errors).length).toBeGreaterThan(1)
+    }
+  })
+})
+
+describe("mealSchema", () => {
+  const validData = {
+    name: "Cafe da manha",
+    time: "08:00",
+    foods: "Pao integral e ovos",
+  }
+
+  it("accepts a valid meal", () => {
+    const result = mealSchema.safeParse(validData)
+    expect(result.success).toBe(true)
+  })
+
+  it("rejects when meal name is empty", () => {
+    const result = mealSchema.safeParse({ ...validData, name: "" })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.name).toContain(
+        "Nome da refeição é obrigatório"
+      )
+    }
+  })
+
+  it("rejects when time is empty", () => {
+    const result = mealSchema.safeParse({ ...validData, time: "" })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.time).toContain(
+        "Horário é obrigatório"
+      )
+    }
+  })
+
+  it("rejects invalid time format", () => {
+    const result = mealSchema.safeParse({ ...validData, time: "25:90" })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.time).toContain(
+        "Formato de horário inválido. Use HH:mm"
+      )
+    }
+  })
+
+  it("rejects when foods is empty", () => {
+    const result = mealSchema.safeParse({ ...validData, foods: "" })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.foods).toContain(
+        "Alimentos são obrigatórios"
+      )
+    }
+  })
+
+  it("rejects name with more than 100 characters", () => {
+    const result = mealSchema.safeParse({ ...validData, name: "A".repeat(101) })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.name).toContain(
+        "Nome da refeição não pode ter mais de 100 caracteres"
+      )
+    }
+  })
+
+  it("rejects foods with more than 1000 characters", () => {
+    const result = mealSchema.safeParse({ ...validData, foods: "A".repeat(1001) })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.foods).toContain(
+        "Alimentos não podem ter mais de 1000 caracteres"
+      )
     }
   })
 })
