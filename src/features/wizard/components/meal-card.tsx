@@ -13,10 +13,14 @@ interface MealCardProps {
 
 export default function MealCard({ name, time, foods, onEditing, onDelete, onClick }: Readonly<MealCardProps>) {
   return (
-    <Card className="mb-2 bg-gray-900 border border-transparent hover:border-teal-600 cursor-pointer transition-all">
+    <Card className="mb-2 bg-gray-900 border border-transparent hover:border-teal-600 transition-all">
       <CardContent className="flex flex-col justify-center items-start gap-4">
         <div className="w-full flex justify-between gap-2">
-          <div onClick={onClick} className="flex gap-4 flex-1 min-w-0">
+          <button
+            type="button"
+            onClick={onClick}
+            className="flex flex-1 min-w-0 gap-4 rounded-lg bg-transparent p-0 text-left outline-none transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-teal-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+          >
             <div className="flex items-center">
               <Utensils className="mt-1" />
             </div>
@@ -25,12 +29,12 @@ export default function MealCard({ name, time, foods, onEditing, onDelete, onCli
               <p className="text-gray-300 text-md font-semibold break-words">{foods}</p>
               <span className="text-md text-gray-500">{time}</span>
             </div>
-          </div>
+          </button>
           <div className="flex items-center gap-1">
-            <Button onClick={onEditing} className="p-2 bg-gray-900 hover:bg-teal-700">
+            <Button type="button" onClick={onEditing} aria-label={`Editar refeição ${name}`} className="p-2 bg-gray-900 hover:bg-teal-700">
               <Pencil size={18} />
             </Button>
-            <Button onClick={onDelete} className="p-2 bg-gray-900 hover:bg-red-700">
+            <Button type="button" onClick={onDelete} aria-label={`Excluir refeição ${name}`} className="p-2 bg-gray-900 hover:bg-red-700">
               <Trash2 size={18} />
             </Button>
           </div>
