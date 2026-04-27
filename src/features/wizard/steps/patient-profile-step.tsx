@@ -18,7 +18,7 @@ import {
 import { useWizardContext } from "../context/wizard-context"
 import { patientProfileSchema, type PatientProfileData } from "../schemas/wizard-schema"
 
-export function PatientProfileStep() {
+export default function PatientProfileStep() {
   const { data, updateSection, next, prev } = useWizardContext()
 
   const objectives = PATIENT_GOAL_VALUES.map((goal) => ({
