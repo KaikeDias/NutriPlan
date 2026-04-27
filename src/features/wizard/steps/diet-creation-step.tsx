@@ -50,7 +50,7 @@ export default function DietCreationStep() {
     setIsDeleteModalOpen(false)
   }
 
-  const handleSaveMeal = (meal: Meal) => {
+  const handleSaveMeal = (meal: Omit<Meal, "id">) => {
     if (mealToEdit) {
       const updatedMeals = data.diet.meals.map((m) =>
         m.id === mealToEdit.id ? { ...meal, id: mealToEdit.id } : m
@@ -142,7 +142,7 @@ export default function DietCreationStep() {
       <MealCardModal
         isOpen={isCardModalOpen}
         onClose={handleCloseCardModal}
-        meal={selectedMeal as Meal}
+        meal={selectedMeal ?? undefined}
       />
 
       <DeleteModal
@@ -151,7 +151,6 @@ export default function DietCreationStep() {
         onConfirm={() => {
           if (mealToDelete) {
             handleDeleteMeal(mealToDelete)
-            handleCloseDeleteModal()
           }
         }}
         description="Tem certeza que deseja deletar esta refeição? Esta ação não pode ser desfeita."

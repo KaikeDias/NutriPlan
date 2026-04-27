@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { TextField } from "@/components/ui/text-field";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +12,7 @@ import { useEffect } from "react";
 interface AddMealModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (meal: Meal) => void;
+  onSave: (meal: Omit<Meal, "id">) => void;
   editingMeal: Meal | null;
 }
 
@@ -32,7 +32,7 @@ export default function AddMealModal({ isOpen, onClose, onSave, editingMeal }: R
   });
 
   const onSubmit = (values: MealData) => {
-    const meal: Meal = {
+    const meal: Omit<Meal, "id"> = {
       name: values.name,
       time: values.time,
       foods: values.foods,
@@ -56,7 +56,7 @@ export default function AddMealModal({ isOpen, onClose, onSave, editingMeal }: R
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-lg bg-gray-900">
         <DialogHeader className="mb-4">
           <DialogTitle className="text-xl font-semibold">Nova Refeição</DialogTitle>
@@ -69,12 +69,14 @@ export default function AddMealModal({ isOpen, onClose, onSave, editingMeal }: R
             label="Horario"
             placeholder="Ex: 08:00"
             type="time"
+            error={errors.time?.message}
             {...register("time")}
           />
           <TextField
             label="Refeição"
             placeholder="Ex: Café da manhã"
             maxLength={100}
+            error={errors.name?.message}
             {...register("name")}
           />
         </div>
@@ -87,12 +89,13 @@ export default function AddMealModal({ isOpen, onClose, onSave, editingMeal }: R
             className="max-h-112.5 resize-none break-all"
             {...register("foods")}
           />
+          {errors.foods?.message && (
+            <p className="text-sm text-destructive">{errors.foods.message}</p>
+          )}
         </div>
 
         <div className="bg-gray-900 flex justify-between">
-          <DialogClose asChild>
-            <Button variant="outline" onClick={handleClose}>Cancelar</Button>
-          </DialogClose>
+          <Button variant="outline" onClick={handleClose}>Cancelar</Button>
           <Button type="submit" onClick={handleSubmit(onSubmit)} className="bg-teal-600 hover:bg-teal-700">Salvar refeição</Button>
         </div>
       </DialogContent>

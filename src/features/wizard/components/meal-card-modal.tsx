@@ -8,10 +8,6 @@ interface MealCardModalProps {
 }
 
 export default function MealCardModal({ isOpen, onClose, meal }: Readonly<MealCardModalProps>) {
-  const handleClose = () => {
-    onClose();
-  }
-
   if (!meal) return null;
 
   return (
