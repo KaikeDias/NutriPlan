@@ -3,15 +3,21 @@ import type {
   ProfessionalProfileData,
 } from "@/features/wizard/schemas/wizard-schema"
 
+export type Meal = {
+  id: string
+  name: string
+  time: string
+  foods: string
+}
+
+export type Diet = {
+  meals: Meal[]
+}
+
 export type WizardStore = {
   professional: ProfessionalProfileData
   patient: PatientProfileData
-  diet: {
-    meals: {
-      name: string
-      foods: { name: string; quantity: string }[]
-    }[]
-  }
+  diet: Diet
 }
 
 export const defaultWizardStore: WizardStore = {
