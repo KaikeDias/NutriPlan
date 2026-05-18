@@ -211,10 +211,6 @@ describe("ExportDietStep", () => {
   })
 
   it("should display error message when error exists", () => {
-    const { usePDFExport } = vi.hoisted(() => ({
-      usePDFExport: vi.fn(),
-    }))
-
     render(
       <WizardContext.Provider value={makeContext()}>
         <ExportDietStep />
