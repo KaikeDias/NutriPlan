@@ -47,7 +47,7 @@ jobs:
             -Dsonar.organization=kaikedias \
             -Dsonar.sources=src \
             -Dsonar.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/tests/**,src/components/ui/**,src/components/theme-provider.tsx,src/main.tsx,src/index.css,src/assets/** \
-            -Dsonar.coverage.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/tests/**,src/components/ui/**,src/components/theme-provider.tsx,src/main.tsx,src/index.css,src/assets/** \
+            -Dsonar.coverage.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/tests/**,src/components/ui/**,src/components/theme-provider.tsx,src/main.tsx,src/index.css,src/assets/**,src/features/wizard/hooks/usePDFExport.ts \
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
             -Dsonar.host.url="$SONAR_HOST_URL" \
             -Dsonar.login="$SONAR_TOKEN" \

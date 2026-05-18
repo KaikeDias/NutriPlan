@@ -26,7 +26,7 @@ export default function MealCard({ name, time, foods, onEditing, onDelete, onCli
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-lg font-semibold">{name}</h3>
-              <p className="text-gray-300 text-md font-semibold break-words">{foods}</p>
+              <p className="text-gray-300 text-md font-semibold break-all">{foods}</p>
               <span className="text-md text-gray-500">{time}</span>
             </div>
           </button>

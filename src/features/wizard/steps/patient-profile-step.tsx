@@ -18,7 +18,7 @@ import {
 import { useWizardContext } from "../context/wizard-context"
 import { patientProfileSchema, type PatientProfileData } from "../schemas/wizard-schema"
 
-export function PatientProfileStep() {
+export default function PatientProfileStep() {
   const { data, updateSection, next, prev } = useWizardContext()
 
   const objectives = PATIENT_GOAL_VALUES.map((goal) => ({
@@ -87,7 +87,7 @@ export function PatientProfileStep() {
                 <SelectTrigger
                   id="objective"
                   aria-invalid={!!errors.goal}
-                  className="h-11 border-gray-700 bg-gray-800/60 text-gray-100 data-[placeholder]:text-gray-400"
+                  className="h-11 border-gray-700 bg-gray-800/60 text-gray-100 data-placeholder:text-gray-400"
                 >
                   <SelectValue placeholder="Selecione o objetivo" />
                 </SelectTrigger>

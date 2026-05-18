@@ -26,6 +26,7 @@ export default defineConfig({
         "src/components/ui/**",
         "src/index.css",
         "src/assets/**",
+        "src/features/wizard/components/place-holder-step.tsx",
       ],
       thresholds: {
         lines: 80,

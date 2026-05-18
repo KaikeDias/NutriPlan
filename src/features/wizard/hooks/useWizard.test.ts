@@ -104,3 +104,43 @@ describe("useWizard — data management", () => {
     expect(result.current.data).toEqual(defaultWizardStore)
   })
 })
+
+describe("useWizard — goToStep", () => {
+  it("goToStep() navigates to a specific step", () => {
+    const { result } = renderHook(() => useWizard())
+
+    act(() => result.current.goToStep(3))
+    expect(result.current.step).toBe(3)
+
+    act(() => result.current.goToStep(1))
+    expect(result.current.step).toBe(1)
+  })
+
+  it("goToStep() clamps step to valid range", () => {
+    const { result } = renderHook(() => useWizard())
+
+    act(() => result.current.goToStep(5))
+    expect(result.current.step).toBe(4)
+
+    act(() => result.current.goToStep(-1))
+    expect(result.current.step).toBe(1)
+  })
+
+  it("goToStep(1) returns to first step", () => {
+    const { result } = renderHook(() => useWizard())
+
+    act(() => result.current.next())
+    act(() => result.current.next())
+    expect(result.current.step).toBe(3)
+
+    act(() => result.current.goToStep(1))
+    expect(result.current.step).toBe(1)
+  })
+
+  it("goToStep(4) navigates to final step", () => {
+    const { result } = renderHook(() => useWizard())
+
+    act(() => result.current.goToStep(4))
+    expect(result.current.step).toBe(4)
+  })
+})
