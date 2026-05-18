@@ -8,9 +8,11 @@ describe("usePDFExport", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockRef = { current: document.createElement("div") }
-    mockRef.current.style.width = "210mm"
-    mockRef.current.style.height = "297mm"
-    mockRef.current.innerHTML = "<p>Test PDF Content</p>"
+    if (mockRef.current) {
+      mockRef.current.style.width = "210mm"
+      mockRef.current.style.height = "297mm"
+      mockRef.current.innerHTML = "<p>Test PDF Content</p>"
+    }
   })
 
   afterEach(() => {

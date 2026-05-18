@@ -36,7 +36,7 @@ function makeContext(
           {
             id: "1",
             time: "07:30",
-            title: "Café da Manhã",
+            name: "Café da Manhã",
             foods: "Ovos e pão integral",
           },
         ],
@@ -80,8 +80,8 @@ describe("ExportDietStep", () => {
         patient: { name: "John", age: 30, weight: 80, goal: "LEAN_MASS_GAIN", observations: "" },
         diet: {
           meals: [
-            { id: "1", time: "07:00", title: "Breakfast", foods: "Eggs" },
-            { id: "2", time: "12:00", title: "Lunch", foods: "Chicken" },
+            { id: "1", time: "07:00", name: "Breakfast", foods: "Eggs" },
+            { id: "2", time: "12:00", name: "Lunch", foods: "Chicken" },
           ],
         },
       },
