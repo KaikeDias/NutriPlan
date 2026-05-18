@@ -111,6 +111,7 @@ function makeContext(overrides: Partial<WizardContextType> = {}): WizardContextT
     data: defaultWizardStore,
     next: vi.fn(),
     prev: vi.fn(),
+    goToStep: vi.fn(),
     updateSection: vi.fn(),
     ...overrides,
   }

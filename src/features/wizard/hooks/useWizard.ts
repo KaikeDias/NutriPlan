@@ -32,6 +32,10 @@ export function useWizard() {
     setStep((prev) => Math.max(prev - 1, 1))
   }
 
+  function goToStep(targetStep: number) {
+    setStep(Math.max(1, Math.min(targetStep, 4)))
+  }
+
   function updateSection<K extends keyof WizardStore>(
     key: K,
     value: WizardStore[K]
@@ -39,5 +43,5 @@ export function useWizard() {
     setData((prev) => ({ ...prev, [key]: value }))
   }
 
-  return { step, data, next, prev, updateSection }
+  return { step, data, next, prev, goToStep, updateSection }
 }
