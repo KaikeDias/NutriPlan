@@ -17,7 +17,7 @@ describe("usePDFExport", () => {
 
   afterEach(() => {
     const styleOverride = document.getElementById("__pdf-color-override__")
-    if (styleOverride) {
+    if (styleOverride && document.head.contains(styleOverride)) {
       document.head.removeChild(styleOverride)
     }
   })
@@ -58,45 +58,45 @@ describe("usePDFExport", () => {
     expect(result.current.error).toBe(null)
   })
 
-  it("should return downloadPDF, loading, error, and resetError functions", () => {
+  it("should return downloadPDF and resetError functions", () => {
     const { result } = renderHook(() => usePDFExport(mockRef as any))
 
     expect(typeof result.current.downloadPDF).toBe("function")
     expect(typeof result.current.resetError).toBe("function")
     expect(typeof result.current.loading).toBe("boolean")
-    expect(result.current.error).toBe(null)
+    expect(result.current.error).toBeNull()
   })
 
-  it("should clear error when downloadPDF succeeds", async () => {
+  it("should handle multiple consecutive error resets", async () => {
     const nullRef = { current: null }
-    const { result: resultWithError } = renderHook(() =>
-      usePDFExport(nullRef as any)
-    )
+    const { result } = renderHook(() => usePDFExport(nullRef as any))
 
     await act(async () => {
-      await resultWithError.current.downloadPDF("test.pdf")
+      await result.current.downloadPDF("test.pdf")
     })
 
-    expect(resultWithError.current.error).not.toBeNull()
+    expect(result.current.error).not.toBeNull()
 
-    const { result: resultWithValidRef } = renderHook(() =>
-      usePDFExport(mockRef as any)
-    )
+    act(() => {
+      result.current.resetError()
+    })
+    expect(result.current.error).toBeNull()
 
-    // Even though we don't have proper mocks, the error should be cleared on new attempt
-    expect(resultWithValidRef.current.error).toBe(null)
+    act(() => {
+      result.current.resetError()
+    })
+    expect(result.current.error).toBeNull()
   })
 
-  it("should append style override before html2canvas", async () => {
-    const getStyleOverride = () =>
-      document.getElementById("__pdf-color-override__")
+  it("should provide error message string when error occurs", async () => {
+    const nullRef = { current: null }
+    const { result } = renderHook(() => usePDFExport(nullRef as any))
 
-    expect(getStyleOverride()).toBeNull()
+    await act(async () => {
+      await result.current.downloadPDF("test.pdf")
+    })
 
-    // The style override is created inside downloadPDF
-    const { result } = renderHook(() => usePDFExport(mockRef as any))
-
-    // We can only verify the structure exists after calling downloadPDF
-    expect(typeof result.current.downloadPDF).toBe("function")
+    expect(typeof result.current.error).toBe("string")
+    expect(result.current.error?.length).toBeGreaterThan(0)
   })
 })
