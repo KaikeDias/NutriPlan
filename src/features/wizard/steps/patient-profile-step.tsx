@@ -26,6 +26,12 @@ export default function PatientProfileStep() {
     label: getPatientGoalLabel(goal),
   }))
 
+  const initialValues = {
+    ...data.patient,
+    age: data.patient.age === 0 ? undefined : data.patient.age,
+    weight: data.patient.weight === 0 ? undefined : data.patient.weight,
+  }
+
   const {
     register,
     control,
@@ -33,12 +39,25 @@ export default function PatientProfileStep() {
     formState: { errors },
   } = useForm<PatientProfileData>({
     resolver: zodResolver(patientProfileSchema),
-    defaultValues: data.patient,
+    defaultValues: initialValues as any,
   })
 
   const onSubmit = (values: PatientProfileData) => {
     updateSection("patient", values)
     next()
+  }
+
+  // Prevent typing more than `maxDigits` in the integer part of number inputs
+  function limitIntegerDigits(e: React.FormEvent<HTMLInputElement>, maxDigits = 3) {
+    const input = e.currentTarget
+    const raw = input.value
+    if (!raw) return
+    const parts = raw.split(".")
+    let intPart = parts[0].replace(/\D/g, "")
+    if (intPart.length > maxDigits) intPart = intPart.slice(0, maxDigits)
+    const frac = parts[1] ?? ""
+    const newVal = frac ? `${intPart}.${frac.replace(/\D/g, "")}` : intPart
+    if (newVal !== raw) input.value = newVal
   }
 
   return (
@@ -58,9 +77,10 @@ export default function PatientProfileStep() {
           id="age"
           type="number"
           min={1}
-          max={100}
+          max={120}
           label="Idade"
           placeholder="Ex: 30"
+          onInput={(e) => limitIntegerDigits(e, 3)}
           error={errors.age?.message}
           {...register("age", { valueAsNumber: true })}
         />
@@ -74,6 +94,7 @@ export default function PatientProfileStep() {
           label="Peso (kg)"
           placeholder="Ex: 72.5"
           error={errors.weight?.message}
+          onInput={(e) => limitIntegerDigits(e, 3)}
           {...register("weight", { valueAsNumber: true })}
         />
 
