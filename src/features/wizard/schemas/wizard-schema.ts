@@ -6,7 +6,7 @@ export const professionalProfileSchema = z.object({
   crn: z
     .string()
     .min(1, "CRN é obrigatório")
-    .regex(/^CRN-\d{1,2}\/\d{4,5}$/, "Formato inválido. Ex: CRN-11/12345"),
+    .regex(/^CRN-\d{5}$/, "Formato inválido. Ex: CRN-12345"),
   logo: z
     .string()
     .optional()

@@ -73,7 +73,7 @@ describe("ProfessionalProfileStep", () => {
     renderStep(ctx)
 
     await user.type(screen.getByLabelText(/Nome completo/i), "Ana Lima")
-    await user.type(screen.getByLabelText(/CRN/i), "CRN-11/12345")
+    await user.type(screen.getByLabelText(/CRN/i), "12345")
     await user.click(screen.getByRole("button", { name: /Próximo/i }))
 
     await waitFor(() => expect(ctx.next).toHaveBeenCalledOnce())
@@ -81,7 +81,7 @@ describe("ProfessionalProfileStep", () => {
       "professional",
       expect.objectContaining({
         name: "Ana Lima",
-        crn: "CRN-11/12345",
+        crn: "CRN-12345",
       })
     )
   })
@@ -91,7 +91,7 @@ describe("ProfessionalProfileStep", () => {
       ...defaultWizardStore,
       professional: {
         name: "João Silva",
-        crn: "CRN-1/99",
+        crn: "CRN-99123",
         logo: "",
       },
     }
@@ -100,7 +100,7 @@ describe("ProfessionalProfileStep", () => {
       screen.getByLabelText<HTMLInputElement>(/Nome completo/i).value
     ).toBe("João Silva")
     expect(screen.getByLabelText<HTMLInputElement>(/CRN/i).value).toBe(
-      "CRN-1/99"
+      "CRN-99123"
     )
   })
 })

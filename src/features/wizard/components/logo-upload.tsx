@@ -54,9 +54,13 @@ export function LogoUpload({
             </button>
           </div>
         ) : (
-          <div className="flex h-32 w-32 items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/50">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex h-32 w-32 items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/50 transition-colors hover:bg-muted hover:border-foreground/20 cursor-pointer"
+          >
             <ImageIcon className="h-10 w-10 text-muted-foreground" />
-          </div>
+          </button>
         )}
 
         <div className="flex-1 space-y-2">
