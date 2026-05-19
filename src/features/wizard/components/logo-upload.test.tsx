@@ -4,7 +4,25 @@ import userEvent from "@testing-library/user-event"
 import { LogoUpload } from "@/features/wizard/components/logo-upload"
 
 describe("LogoUpload", () => {
-  it("renders the upload button with 'Enviar Logo' when no value", () => {
+  it("renders the upload placeholder as a clickable button when no value", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    render(<LogoUpload onChange={handleChange} />)
+
+    // When no value, there are 2 buttons: placeholder + "Enviar Logo"
+    const buttons = screen.getAllByRole("button")
+    expect(buttons.length).toBe(2)
+
+    // The first button is the placeholder
+    const placeholderBtn = buttons[0]
+    expect(placeholderBtn).toBeInTheDocument()
+
+    // Clicking the placeholder should trigger file input
+    await user.click(placeholderBtn)
+    expect(placeholderBtn).toBeInTheDocument()
+  })
+
+  it("renders 'Enviar Logo' button when no value is provided", () => {
     render(<LogoUpload onChange={vi.fn()} />)
     expect(
       screen.getByRole("button", { name: /Enviar Logo/i })
@@ -29,13 +47,14 @@ describe("LogoUpload", () => {
     render(
       <LogoUpload value="data:image/png;base64,abc" onChange={handleChange} />
     )
-    // The remove (X) button is inside the group — find it by its SVG icon container
-    // It becomes visible on hover; we click it directly
+    // When value exists, there are 2 buttons: the remove (X) button and "Alterar Logo"
     const buttons = screen.getAllByRole("button")
-    // There are 2 buttons: "Alterar Logo" and the remove button
-    const removeBtn = buttons.find((b) => !b.textContent?.includes("Alterar"))
-    expect(removeBtn).toBeDefined()
-    await user.click(removeBtn!)
+    expect(buttons.length).toBe(2)
+
+    // The remove (X) button is rendered first in the DOM (index 0)
+    const removeBtn = buttons[0]
+
+    await user.click(removeBtn)
     expect(handleChange).toHaveBeenCalledWith(undefined)
   })
 

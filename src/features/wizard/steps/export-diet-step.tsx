@@ -40,7 +40,6 @@ export default function ExportDietStep() {
         "Tem certeza que deseja criar um novo plano? Os dados do paciente serão resetados, mas as informações do nutricionista serão mantidas."
       )
     ) {
-      // Reset apenas dados do paciente e dieta, mantendo profissional
       const emptyData = {
         patient: {
           name: "",
@@ -53,7 +52,6 @@ export default function ExportDietStep() {
       };
       updateSection("patient", emptyData.patient);
       updateSection("diet", emptyData.diet);
-      // Voltar para o primeiro passo
       goToStep(1);
     }
   }
@@ -136,20 +134,17 @@ export default function ExportDietStep() {
         </div>
       </div>
 
-      {/* PDF Preview Section */}
       <div className="mt-12 border-t pt-8">
         <div className="flex items-center gap-2 mb-6">
           <FileText className="w-5 h-5 text-teal-600" />
           <h2 className="text-lg font-semibold">Pré-visualização do PDF</h2>
         </div>
 
-        {/* Preview Container - Scrollable A4 Preview */}
         <div className="border border-gray-700 rounded-lg bg-gray-900 p-4 max-h-[600px] overflow-y-auto">
           <PDFPreview {...mapWizardDataToPDF(data)} />
         </div>
       </div>
 
-      {/* Off-screen PDF Reference for Download - must NOT be display:none */}
       <div style={{ position: "absolute", left: "-99999px", top: 0, width: "210mm", pointerEvents: "none" }}>
         <PDFPreview ref={pdfRef} {...mapWizardDataToPDF(data)} />
       </div>

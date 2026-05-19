@@ -9,7 +9,7 @@ import { PATIENT_GOAL_VALUES } from "@/features/wizard/types/patient-goal"
 describe("professionalProfileSchema", () => {
   const valid = {
     name: "Ana Lima",
-    crn: "CRN-3/12345",
+    crn: "CRN-12345",
   }
 
   it("accepts valid data without a logo", () => {
@@ -64,10 +64,10 @@ describe("professionalProfileSchema", () => {
 
   // ─── CRN validation ────────────────────────────────────────────────────────
 
-  it("accepts a 2-digit region CRN", () => {
+  it("accepts a valid CRN with 5 digits", () => {
     const result = professionalProfileSchema.safeParse({
       ...valid,
-      crn: "CRN-11/12345",
+      crn: "CRN-54321",
     })
     expect(result.success).toBe(true)
   })
@@ -80,20 +80,33 @@ describe("professionalProfileSchema", () => {
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.crn).toContain(
-        "Formato inválido. Ex: CRN-11/12345"
+        "Formato inválido. Ex: CRN-12345"
       )
     }
   })
 
-  it("rejects a CRN missing the dash", () => {
+  it("rejects a CRN with fewer than 5 digits", () => {
     const result = professionalProfileSchema.safeParse({
       ...valid,
-      crn: "CRN3/12345",
+      crn: "CRN-1234",
     })
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.crn).toContain(
-        "Formato inválido. Ex: CRN-11/12345"
+        "Formato inválido. Ex: CRN-12345"
+      )
+    }
+  })
+
+  it("rejects a CRN with more than 5 digits", () => {
+    const result = professionalProfileSchema.safeParse({
+      ...valid,
+      crn: "CRN-123456",
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.crn).toContain(
+        "Formato inválido. Ex: CRN-12345"
       )
     }
   })

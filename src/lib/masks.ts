@@ -5,27 +5,12 @@ import {
   type MaskitoPreprocessor,
 } from "@maskito/core"
 
-const crnOneDigitMask: MaskitoMaskExpression = [
+// CRN format: CRN-[5 digits]
+const crnMask: MaskitoMaskExpression = [
   "C",
   "R",
   "N",
   "-",
-  /\d/,
-  "/",
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-]
-const crnTwoDigitMask: MaskitoMaskExpression = [
-  "C",
-  "R",
-  "N",
-  "-",
-  /\d/,
-  /\d/,
-  "/",
   /\d/,
   /\d/,
   /\d/,
@@ -33,25 +18,26 @@ const crnTwoDigitMask: MaskitoMaskExpression = [
   /\d/,
 ]
 
-// When the user types '/' right after the first region digit (cursor at position 5,
-// value = 'CRN-X'), we manually insert the '/' so the mask can switch to 1-digit mode.
+// Prevent deletion of "CRN-" prefix - always keep it
 export const crnPreprocessor: MaskitoPreprocessor = (
   { elementState, data },
   actionType
 ) => {
-  if (actionType !== "insert") return { elementState, data }
-  const { value, selection } = elementState
-  if (data === "/" && selection[0] === 5 && value.length === 5) {
-    return {
-      elementState: { value: value + "/", selection: [6, 6] },
-      data: "",
+  if (actionType === "deleteBackward") {
+    const { value, selection } = elementState
+    // If trying to delete the "CRN-" prefix, prevent it
+    if (selection[0] <= 4) {
+      return {
+        elementState: { value, selection: [4, 4] },
+        data: "",
+      }
     }
   }
   return { elementState, data }
 }
 
 export const crnMaskOptions: MaskitoOptions = {
-  mask: ({ value }) => (value[5] === "/" ? crnOneDigitMask : crnTwoDigitMask),
+  mask: crnMask,
   preprocessors: [crnPreprocessor],
 }
 

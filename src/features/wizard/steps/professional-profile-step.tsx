@@ -41,6 +41,7 @@ export default function ProfessionalProfileStep() {
           label="Nome completo"
           placeholder="Nome Completo"
           error={errors.name?.message}
+          maxLength={100}
           {...register("name")}
         />
         <Controller
@@ -54,7 +55,7 @@ export default function ProfessionalProfileStep() {
               }}
               id="crn"
               label="CRN"
-              placeholder="CRN-0/00000"
+              placeholder="CRN-00000"
               error={errors.crn?.message}
               {...field}
             />

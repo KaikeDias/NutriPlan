@@ -4,7 +4,6 @@ import {
   crnPreprocessor,
   crnMaskOptions,
 } from "@/lib/masks"
-import type { MaskitoOptions } from "@maskito/core"
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -12,101 +11,100 @@ function makeState(value: string, cursor: number) {
   return { value, selection: [cursor, cursor] as [number, number] }
 }
 
-function crnDynamicMask(value: string) {
-  const maskFn = (
-    crnMaskOptions as MaskitoOptions & {
-      mask: (state: { value: string }) => unknown
-    }
-  ).mask
-  return maskFn({ value })
-}
-
 // ─── crnMaskTransformer ───────────────────────────────────────────────────────
 
 describe("crnMaskTransformer", () => {
-  it("formats a 2-digit region CRN", () => {
-    expect(crnMaskTransformer("CRN-1112345")).toBe("CRN-11/12345")
+  it("formats a complete CRN", () => {
+    expect(crnMaskTransformer("CRN-12345")).toBe("CRN-12345")
   })
 
-  it("preserves an already-formatted 2-digit region CRN", () => {
-    expect(crnMaskTransformer("CRN-11/12345")).toBe("CRN-11/12345")
+  it("preserves an already-formatted CRN", () => {
+    expect(crnMaskTransformer("CRN-12345")).toBe("CRN-12345")
   })
 
   it("partially formats an incomplete CRN", () => {
-    expect(crnMaskTransformer("CRN-11")).toBe("CRN-11")
+    expect(crnMaskTransformer("CRN-123")).toBe("CRN-123")
+  })
+
+  it("formats only digits without prefix", () => {
+    expect(crnMaskTransformer("12345")).toBe("CRN-12345")
   })
 })
 
 // ─── crnPreprocessor ─────────────────────────────────────────────────────────
 
 describe("crnPreprocessor", () => {
-  it("returns state unchanged for actionType deleteBackward", () => {
-    const state = makeState("CRN-1", 5)
+  it("prevents deletion of CRN- prefix (cursor at position 0)", () => {
+    const state = makeState("CRN-12345", 0)
     const result = crnPreprocessor(
-      { elementState: state, data: "/" },
+      { elementState: state, data: "" },
       "deleteBackward"
     )
-    expect(result).toEqual({ elementState: state, data: "/" })
+    expect(result.elementState.selection).toEqual([4, 4])
+  })
+
+  it("prevents deletion of CRN- prefix (cursor at position 3)", () => {
+    const state = makeState("CRN-12345", 3)
+    const result = crnPreprocessor(
+      { elementState: state, data: "" },
+      "deleteBackward"
+    )
+    expect(result.elementState.selection).toEqual([4, 4])
+  })
+
+  it("prevents deletion of CRN- prefix (cursor at position 4)", () => {
+    const state = makeState("CRN-12345", 4)
+    const result = crnPreprocessor(
+      { elementState: state, data: "" },
+      "deleteBackward"
+    )
+    expect(result.elementState.selection).toEqual([4, 4])
+  })
+
+  it("allows deletion after CRN- prefix (cursor at position 5)", () => {
+    const state = makeState("CRN-12345", 5)
+    const result = crnPreprocessor(
+      { elementState: state, data: "" },
+      "deleteBackward"
+    )
+    expect(result).toEqual({ elementState: state, data: "" })
+  })
+
+  it("returns state unchanged for actionType insert", () => {
+    const state = makeState("CRN-1", 5)
+    const result = crnPreprocessor({ elementState: state, data: "2" }, "insert")
+    expect(result).toEqual({ elementState: state, data: "2" })
   })
 
   it("returns state unchanged for actionType deleteForward", () => {
     const state = makeState("CRN-1", 5)
     const result = crnPreprocessor(
-      { elementState: state, data: "/" },
+      { elementState: state, data: "" },
       "deleteForward"
     )
-    expect(result).toEqual({ elementState: state, data: "/" })
+    expect(result).toEqual({ elementState: state, data: "" })
   })
 
   it("returns state unchanged for actionType validation", () => {
     const state = makeState("CRN-1", 5)
     const result = crnPreprocessor(
-      { elementState: state, data: "/" },
+      { elementState: state, data: "" },
       "validation"
     )
-    expect(result).toEqual({ elementState: state, data: "/" })
-  })
-
-  it("returns state unchanged when data is not '/'", () => {
-    const state = makeState("CRN-1", 5)
-    const result = crnPreprocessor({ elementState: state, data: "#" }, "insert")
-    expect(result).toEqual({ elementState: state, data: "#" })
-  })
-
-  it("returns state unchanged when selection[0] is not 5", () => {
-    const state = makeState("CRN-1", 3)
-    const result = crnPreprocessor({ elementState: state, data: "/" }, "insert")
-    expect(result).toEqual({ elementState: state, data: "/" })
-  })
-
-  it("returns state unchanged when value.length is not 5", () => {
-    const state = makeState("CRN-", 5)
-    const result = crnPreprocessor({ elementState: state, data: "/" }, "insert")
-    expect(result).toEqual({ elementState: state, data: "/" })
-  })
-
-  it("inserts '/' and advances cursor when all conditions match", () => {
-    const state = makeState("CRN-3", 5)
-    const result = crnPreprocessor({ elementState: state, data: "/" }, "insert")
-    expect(result).toEqual({
-      elementState: { value: "CRN-3/", selection: [6, 6] },
-      data: "",
-    })
+    expect(result).toEqual({ elementState: state, data: "" })
   })
 })
 
-// ─── crnMaskOptions dynamic mask ─────────────────────────────────────────────
+// ─── crnMaskOptions ──────────────────────────────────────────────────────────
 
-describe("crnMaskOptions dynamic mask", () => {
-  it("returns 1-digit region mask when value[5] is '/'", () => {
-    const mask = crnDynamicMask("CRN-3/1")
-    // 1-digit mask has 11 entries: C R N - \d / \d \d \d \d \d
-    expect((mask as unknown[]).length).toBe(11)
+describe("crnMaskOptions", () => {
+  it("should have a valid mask configuration", () => {
+    expect(crnMaskOptions.mask).toBeDefined()
+    expect(crnMaskOptions.preprocessors).toBeDefined()
   })
 
-  it("returns 2-digit region mask when value[5] is not '/'", () => {
-    const mask = crnDynamicMask("CRN-11")
-    // 2-digit mask has 12 entries: C R N - \d \d / \d \d \d \d \d
-    expect((mask as unknown[]).length).toBe(12)
+  it("should have preprocessor array with crnPreprocessor", () => {
+    expect(Array.isArray(crnMaskOptions.preprocessors)).toBe(true)
+    expect(crnMaskOptions.preprocessors).toContain(crnPreprocessor)
   })
 })
