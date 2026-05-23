@@ -28,8 +28,8 @@ describe("usePDFExport", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    global.URL.createObjectURL = vi.fn(() => "blob:mock-url")
-    global.URL.revokeObjectURL = vi.fn()
+    window.URL.createObjectURL = vi.fn(() => "blob:mock-url")
+    window.URL.revokeObjectURL = vi.fn()
 
     const mockLink = { href: "", download: "", click: vi.fn() }
     vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
