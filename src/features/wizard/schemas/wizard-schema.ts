@@ -28,10 +28,24 @@ export const patientProfileSchema = z.object({
 
 export type PatientProfileData = z.infer<typeof patientProfileSchema>
 
+export const foodItemSchema = z.object({
+  name: z.string().min(1, "Nome do alimento é obrigatório"),
+  amount_caseira_value: z
+    .string()
+    .regex(/^$|^\d+([.,]\d+)?$|^\d+\/\d+$/, "Digite um valor válido"),
+  amount_caseira_unit: z.string(),
+  amount_tecnica_value: z
+    .string()
+    .regex(/^$|^\d+([.,]\d+)?$|^\d+\/\d+$/, "Digite um valor válido"),
+  amount_tecnica_unit: z.string(),
+})
+
+export type FoodItemData = z.infer<typeof foodItemSchema>
+
 export const mealSchema = z.object({
   name: z.string().min(1, "Nome da refeição é obrigatório").max(100, "Nome da refeição não pode ter mais de 100 caracteres"),
   time: z.string().min(1, "Horário é obrigatório").regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Formato de horário inválido. Use HH:mm"),
-  foods: z.string().min(1, "Alimentos são obrigatórios").max(1000, "Alimentos não podem ter mais de 1000 caracteres"),
+  foods: z.array(foodItemSchema).min(1, "Adicione pelo menos um alimento"),
 })
 
 export type MealData = z.infer<typeof mealSchema>

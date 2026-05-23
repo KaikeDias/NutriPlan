@@ -17,6 +17,7 @@ import {
 } from "../types/patient-goal"
 import { useWizardContext } from "../context/wizard-context"
 import { patientProfileSchema, type PatientProfileData } from "../schemas/wizard-schema"
+import { limitIntegerDigits } from "@/lib/masks"
 
 export default function PatientProfileStep() {
   const { data, updateSection, next, prev } = useWizardContext()
@@ -45,19 +46,6 @@ export default function PatientProfileStep() {
   const onSubmit = (values: PatientProfileData) => {
     updateSection("patient", values)
     next()
-  }
-
-  // Prevent typing more than `maxDigits` in the integer part of number inputs
-  function limitIntegerDigits(e: React.FormEvent<HTMLInputElement>, maxDigits = 3) {
-    const input = e.currentTarget
-    const raw = input.value
-    if (!raw) return
-    const parts = raw.split(".")
-    let intPart = parts[0].replace(/\D/g, "")
-    if (intPart.length > maxDigits) intPart = intPart.slice(0, maxDigits)
-    const frac = parts[1] ?? ""
-    const newVal = frac ? `${intPart}.${frac.replace(/\D/g, "")}` : intPart
-    if (newVal !== raw) input.value = newVal
   }
 
   return (

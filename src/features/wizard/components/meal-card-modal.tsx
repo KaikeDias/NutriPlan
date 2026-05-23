@@ -1,5 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Meal } from "../stores/wizard-store";
+import { formatFoodDisplay } from "../utils/pdf-generator";
+import type { PDFFoodItem } from "../utils/pdf-generator";
 
 interface MealCardModalProps {
   isOpen: boolean;
@@ -19,9 +21,13 @@ export default function MealCardModal({ isOpen, onClose, meal }: Readonly<MealCa
             {meal.time}
           </DialogDescription>
         </DialogHeader>
-        <div className="text-gray-300 break-all">
-          {meal.foods}
-        </div>
+        <ul className="flex flex-col gap-2 list-none p-0 m-0">
+          {meal.foods.map((food, index) => (
+            <li key={index} className="text-gray-300 text-sm">
+              {formatFoodDisplay(food as PDFFoodItem)}
+            </li>
+          ))}
+        </ul>
       </DialogContent >
     </Dialog >
   );

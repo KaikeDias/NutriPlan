@@ -1,5 +1,6 @@
 import { forwardRef } from "react"
 import type { PDFPreviewProps } from "../utils/pdf-generator"
+import { formatFoodDisplay } from "../utils/pdf-generator"
 
 const PDFPreview = forwardRef<HTMLDivElement, PDFPreviewProps>(
   ({ professional, patient, meals, currentDate, objectiveLabels }, ref) => {
@@ -178,17 +179,27 @@ const PDFPreview = forwardRef<HTMLDivElement, PDFPreviewProps>(
                     {meal.title}
                   </span>
                 </div>
-                <p
+                <ul
                   style={{
-                    fontSize: "11px",
-                    color: "#4b5563",
-                    whiteSpace: "pre-wrap",
-                    lineHeight: "1.5",
+                    listStyle: "none",
                     margin: "0",
+                    padding: "0",
                   }}
                 >
-                  {meal.foods}
-                </p>
+                  {meal.foods.map((food, idx) => (
+                    <li
+                      key={idx}
+                      style={{
+                        fontSize: "11px",
+                        color: "#4b5563",
+                        lineHeight: "1.5",
+                        whiteSpace: "pre-wrap",
+                      }}
+                    >
+                      • {formatFoodDisplay(food)}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>

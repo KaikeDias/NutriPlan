@@ -22,7 +22,9 @@ const mockPDFProps = {
       id: "1",
       time: "07:30",
       title: "Cafe da Manha",
-      foods: "2 ovos",
+      foods: [
+        { name: "2 ovos", amount_caseira_value: "2", amount_caseira_unit: "unidade", amount_tecnica_value: "100", amount_tecnica_unit: "g" },
+      ],
     },
   ],
   currentDate: "18/05/2026",
@@ -95,7 +97,9 @@ describe("PDFPreview", () => {
           id: "2",
           time: "12:30",
           title: "Almoco",
-          foods: "Frango com arroz",
+          foods: [
+            { name: "Frango com arroz", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" },
+          ],
         },
       ],
     }

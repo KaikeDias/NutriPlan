@@ -16,7 +16,7 @@ vi.mock("../components/NutritionPDF", () => ({
 const mockProps: PDFPreviewProps = {
   professional: { name: "Dr. Teste", crn: "CRN123" },
   patient: { name: "Paciente", age: 30, currentWeight: 70, objective: "LEAN_MASS_GAIN" },
-  meals: [{ id: "1", title: "Café da Manhã", time: "08:00", foods: "Ovos" }],
+  meals: [{ id: "1", title: "Café da Manhã", time: "08:00", foods: [{ name: "Ovos", amount_caseira_value: "2", amount_caseira_unit: "unidade", amount_tecnica_value: "100", amount_tecnica_unit: "g" }] }],
   currentDate: "22/05/2026",
   objectiveLabels: { LEAN_MASS_GAIN: "Ganho de Massa Magra" },
 }

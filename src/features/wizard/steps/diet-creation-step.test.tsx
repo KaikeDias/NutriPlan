@@ -22,7 +22,7 @@ vi.mock("@/features/wizard/components/add-meal-modal", () => ({
     editingMeal,
   }: {
     isOpen: boolean
-    onSave: (meal: { name: string; time: string; foods: string }) => void
+    onSave: (meal: { name: string; time: string; foods: { name: string; amount_caseira_value: string; amount_caseira_unit: string; amount_tecnica_value: string; amount_tecnica_unit: string }[] }) => void
     editingMeal: Meal | null
   }) => (
     <div>
@@ -30,7 +30,7 @@ vi.mock("@/features/wizard/components/add-meal-modal", () => ({
       <span data-testid="editing-meal-id">{editingMeal?.id ?? "none"}</span>
       <button
         type="button"
-        onClick={() => onSave({ name: "Nova refeição", time: "08:00", foods: "Frutas" })}
+        onClick={() => onSave({ name: "Nova refeição", time: "08:00", foods: [{ name: "Frutas", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] })}
       >
         mock-save-new
       </button>
@@ -40,7 +40,7 @@ vi.mock("@/features/wizard/components/add-meal-modal", () => ({
           onSave({
             name: "Refeição editada",
             time: "09:00",
-            foods: "Iogurte",
+            foods: [{ name: "Iogurte", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }],
           })
         }
       >
@@ -174,7 +174,7 @@ describe("DietCreationStep", () => {
           id: "123e4567-e89b-12d3-a456-426614174000",
           name: "Nova refeição",
           time: "08:00",
-          foods: "Frutas",
+          foods: [{ name: "Frutas", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }],
         },
       ],
     })
@@ -186,7 +186,7 @@ describe("DietCreationStep", () => {
       id: "meal-a",
       name: "Almoço",
       time: "12:00",
-      foods: "Arroz e feijão",
+      foods: [{ name: "Arroz e feijão", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }],
     }
 
     const ctx = makeContext({
@@ -212,7 +212,7 @@ describe("DietCreationStep", () => {
           id: "meal-a",
           name: "Refeição editada",
           time: "09:00",
-          foods: "Iogurte",
+          foods: [{ name: "Iogurte", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }],
         },
       ],
     })
@@ -224,7 +224,7 @@ describe("DietCreationStep", () => {
       id: "meal-a",
       name: "Almoço",
       time: "12:00",
-      foods: "Arroz e feijão",
+      foods: [{ name: "Arroz e feijão", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }],
     }
 
     const ctx = makeContext({
@@ -271,7 +271,7 @@ describe("DietCreationStep", () => {
               id: "meal-1",
               name: "Café",
               time: "08:00",
-              foods: "Frutas",
+              foods: [{ name: "Frutas", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }],
             },
           ],
         },

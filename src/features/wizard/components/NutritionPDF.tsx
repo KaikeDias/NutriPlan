@@ -1,5 +1,6 @@
 import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer"
 import type { PDFPreviewProps } from "../utils/pdf-generator"
+import { formatFoodDisplay } from "../utils/pdf-generator"
 
 const styles = StyleSheet.create({
   page: {
@@ -275,7 +276,13 @@ export function NutritionPDF({
                 <Text style={styles.timeBadge}>{meal.time}</Text>
                 <Text style={styles.mealTitle}>{meal.title}</Text>
               </View>
-              <Text style={styles.mealFoods}>{meal.foods}</Text>
+              <View>
+                {meal.foods.map((food, idx) => (
+                  <Text key={idx} style={styles.mealFoods}>
+                    • {formatFoodDisplay(food)}
+                  </Text>
+                ))}
+              </View>
             </View>
           ))}
         </View>

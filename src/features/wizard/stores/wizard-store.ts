@@ -3,11 +3,19 @@ import type {
   ProfessionalProfileData,
 } from "@/features/wizard/schemas/wizard-schema"
 
+export type FoodItem = {
+  name: string
+  amount_caseira_value: string
+  amount_caseira_unit: string
+  amount_tecnica_value: string
+  amount_tecnica_unit: string
+}
+
 export type Meal = {
   id: string
   name: string
   time: string
-  foods: string
+  foods: FoodItem[]
 }
 
 export type Diet = {

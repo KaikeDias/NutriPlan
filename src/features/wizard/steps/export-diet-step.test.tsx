@@ -37,7 +37,9 @@ function makeContext(
             id: "1",
             time: "07:30",
             name: "Café da Manhã",
-            foods: "Ovos e pão integral",
+            foods: [
+              { name: "Ovos e pão integral", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" },
+            ],
           },
         ],
       },
@@ -80,8 +82,8 @@ describe("ExportDietStep", () => {
         patient: { name: "John", age: 30, weight: 80, goal: "LEAN_MASS_GAIN", observations: "" },
         diet: {
           meals: [
-            { id: "1", time: "07:00", name: "Breakfast", foods: "Eggs" },
-            { id: "2", time: "12:00", name: "Lunch", foods: "Chicken" },
+            { id: "1", time: "07:00", name: "Breakfast", foods: [{ name: "Eggs", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
+            { id: "2", time: "12:00", name: "Lunch", foods: [{ name: "Chicken", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
           ],
         },
       },
