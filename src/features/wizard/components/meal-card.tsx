@@ -1,17 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Pencil, Trash2, Utensils } from "lucide-react";
+import type { FoodItem } from "../stores/wizard-store";
+
+const MAX_PREVIEW_FOODS = 2;
 
 interface MealCardProps {
   name: string;
   time: string;
-  foods: string;
+  foods: FoodItem[];
   onEditing?: () => void;
   onDelete?: () => void;
   onClick?: () => void;
 }
 
 export default function MealCard({ name, time, foods, onEditing, onDelete, onClick }: Readonly<MealCardProps>) {
+  const previewFoods = foods.slice(0, MAX_PREVIEW_FOODS);
+  const remaining = foods.length - MAX_PREVIEW_FOODS;
+
   return (
     <Card className="mb-2 bg-gray-900 border border-transparent hover:border-teal-600 transition-all">
       <CardContent className="flex flex-col justify-center items-start gap-4">
@@ -26,8 +32,15 @@ export default function MealCard({ name, time, foods, onEditing, onDelete, onCli
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-lg font-semibold">{name}</h3>
-              <p className="text-gray-300 text-md font-semibold break-all">{foods}</p>
-              <span className="text-md text-gray-500">{time}</span>
+              <ul className="text-gray-300 text-sm mt-0.5 list-none p-0 m-0">
+                {previewFoods.map((food, i) => (
+                  <li key={i} className="truncate">{food.name}</li>
+                ))}
+                {remaining > 0 && (
+                  <li className="text-gray-500 text-xs">+{remaining} mais</li>
+                )}
+              </ul>
+              <span className="text-sm text-gray-500">{time}</span>
             </div>
           </button>
           <div className="flex items-center gap-1">

@@ -358,10 +358,18 @@ describe("patientProfileSchema", () => {
 })
 
 describe("mealSchema", () => {
+  const validFood = {
+    name: "Pão integral",
+    amount_caseira_value: "1",
+    amount_caseira_unit: "fatia",
+    amount_tecnica_value: "30",
+    amount_tecnica_unit: "g",
+  }
+
   const validData = {
     name: "Cafe da manha",
     time: "08:00",
-    foods: "Pao integral e ovos",
+    foods: [validFood],
   }
 
   it("accepts a valid meal", () => {
@@ -399,12 +407,12 @@ describe("mealSchema", () => {
     }
   })
 
-  it("rejects when foods is empty", () => {
-    const result = mealSchema.safeParse({ ...validData, foods: "" })
+  it("rejects when foods array is empty", () => {
+    const result = mealSchema.safeParse({ ...validData, foods: [] })
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.foods).toContain(
-        "Alimentos são obrigatórios"
+        "Adicione pelo menos um alimento"
       )
     }
   })
@@ -419,13 +427,11 @@ describe("mealSchema", () => {
     }
   })
 
-  it("rejects foods with more than 1000 characters", () => {
-    const result = mealSchema.safeParse({ ...validData, foods: "A".repeat(1001) })
+  it("rejects food item with empty name", () => {
+    const result = mealSchema.safeParse({
+      ...validData,
+      foods: [{ ...validFood, name: "" }],
+    })
     expect(result.success).toBe(false)
-    if (!result.success) {
-      expect(result.error.flatten().fieldErrors.foods).toContain(
-        "Alimentos não podem ter mais de 1000 caracteres"
-      )
-    }
   })
 })

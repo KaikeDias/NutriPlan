@@ -7,7 +7,11 @@ const sampleMeal = {
   id: "meal-1",
   name: "Almoço",
   time: "12:00",
-  foods: "Arroz, feijão e frango",
+  foods: [
+    { name: "Arroz", amount_caseira_value: "1", amount_caseira_unit: "concha", amount_tecnica_value: "100", amount_tecnica_unit: "g" },
+    { name: "Feijão", amount_caseira_value: "1", amount_caseira_unit: "concha", amount_tecnica_value: "80", amount_tecnica_unit: "g" },
+    { name: "Frango", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "120", amount_tecnica_unit: "g" },
+  ],
 }
 
 describe("MealCardModal", () => {
@@ -20,7 +24,9 @@ describe("MealCardModal", () => {
 
     expect(screen.getByText("Almoço")).toBeInTheDocument()
     expect(screen.getByText("12:00")).toBeInTheDocument()
-    expect(screen.getByText("Arroz, feijão e frango")).toBeInTheDocument()
+    expect(screen.getByText(/Arroz — 1 concha/)).toBeInTheDocument()
+    expect(screen.getByText(/Feijão — 1 concha/)).toBeInTheDocument()
+    expect(screen.getByText(/Frango.*120 g/)).toBeInTheDocument()
   })
 
   it("does not render when meal is undefined", () => {

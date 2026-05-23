@@ -195,7 +195,7 @@ describe("pdf-generator", () => {
               id: "1",
               time: "07:30",
               name: "Café da Manhã",
-              foods: "Ovos e pão integral",
+              foods: [{ name: "Ovos e pão integral", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }],
             },
           ],
         },
@@ -240,9 +240,9 @@ describe("pdf-generator", () => {
         },
         diet: {
           meals: [
-            { id: "1", time: "07:00", name: "Breakfast", foods: "Eggs" },
-            { id: "2", time: "12:00", name: "Lunch", foods: "Chicken" },
-            { id: "3", time: "19:00", name: "Dinner", foods: "Fish" },
+            { id: "1", time: "07:00", name: "Breakfast", foods: [{ name: "Eggs", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
+            { id: "2", time: "12:00", name: "Lunch", foods: [{ name: "Chicken", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
+            { id: "3", time: "19:00", name: "Dinner", foods: [{ name: "Fish", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
           ],
         },
       } as any
@@ -268,7 +268,7 @@ describe("pdf-generator", () => {
           goal: "LEAN_MASS_GAIN" as const,
           observations: "",
         },
-        diet: { meals: [{ id: "1", time: "07:00", name: "B", foods: "E" }] },
+        diet: { meals: [{ id: "1", time: "07:00", name: "B", foods: [{ name: "E", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] }] },
       } as any
 
       const result = mapWizardDataToPDF(data)

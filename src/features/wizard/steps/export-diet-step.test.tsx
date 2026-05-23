@@ -7,6 +7,8 @@ import {
 } from "@/features/wizard/context/wizard-context"
 import ExportDietStep from "@/features/wizard/steps/export-diet-step"
 import { defaultWizardStore } from "@/features/wizard/stores/wizard-store"
+import { usePDFExport } from "@/features/wizard/hooks/usePDFExport"
+import { validatePDFData } from "@/features/wizard/utils/pdf-generator"
 
 vi.mock("@/features/wizard/hooks/usePDFExport", () => ({
   usePDFExport: vi.fn(() => ({
@@ -16,6 +18,16 @@ vi.mock("@/features/wizard/hooks/usePDFExport", () => ({
     resetError: vi.fn(),
   })),
 }))
+
+vi.mock("@/features/wizard/utils/pdf-generator", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/wizard/utils/pdf-generator")>()
+  return {
+    ...actual,
+    validatePDFData: vi.fn((data: Parameters<typeof actual.validatePDFData>[0]) =>
+      actual.validatePDFData(data)
+    ),
+  }
+})
 
 function makeContext(
   overrides: Partial<WizardContextType> = {}
@@ -37,7 +49,9 @@ function makeContext(
             id: "1",
             time: "07:30",
             name: "Café da Manhã",
-            foods: "Ovos e pão integral",
+            foods: [
+              { name: "Ovos e pão integral", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" },
+            ],
           },
         ],
       },
@@ -80,8 +94,8 @@ describe("ExportDietStep", () => {
         patient: { name: "John", age: 30, weight: 80, goal: "LEAN_MASS_GAIN", observations: "" },
         diet: {
           meals: [
-            { id: "1", time: "07:00", name: "Breakfast", foods: "Eggs" },
-            { id: "2", time: "12:00", name: "Lunch", foods: "Chicken" },
+            { id: "1", time: "07:00", name: "Breakfast", foods: [{ name: "Eggs", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
+            { id: "2", time: "12:00", name: "Lunch", foods: [{ name: "Chicken", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
           ],
         },
       },
@@ -211,14 +225,123 @@ describe("ExportDietStep", () => {
   })
 
   it("should display error message when error exists", () => {
+    vi.mocked(usePDFExport).mockReturnValueOnce({
+      downloadPDF: vi.fn(),
+      loading: false,
+      error: "Falha ao renderizar",
+      resetError: vi.fn(),
+    })
+
     render(
       <WizardContext.Provider value={makeContext()}>
         <ExportDietStep />
       </WizardContext.Provider>
     )
 
-    // Note: This test validates the error display component is present
-    // Actual error display would be tested with proper error state mocking
+    expect(screen.getByText(/Erro ao gerar PDF: Falha ao renderizar/)).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: /Descartar mensagem/i })).toBeInTheDocument()
+  })
+
+  it("should call resetError when Descartar mensagem is clicked", async () => {
+    const user = userEvent.setup()
+    const resetError = vi.fn()
+
+    vi.mocked(usePDFExport).mockReturnValueOnce({
+      downloadPDF: vi.fn(),
+      loading: false,
+      error: "Erro genérico",
+      resetError,
+    })
+
+    render(
+      <WizardContext.Provider value={makeContext()}>
+        <ExportDietStep />
+      </WizardContext.Provider>
+    )
+
+    await user.click(screen.getByRole("button", { name: /Descartar mensagem/i }))
+
+    expect(resetError).toHaveBeenCalledOnce()
+  })
+
+  it("should show 'Gerando...' and disable download button when loading", () => {
+    vi.mocked(usePDFExport).mockReturnValueOnce({
+      downloadPDF: vi.fn(),
+      loading: true,
+      error: null,
+      resetError: vi.fn(),
+    })
+
+    render(
+      <WizardContext.Provider value={makeContext()}>
+        <ExportDietStep />
+      </WizardContext.Provider>
+    )
+
+    const btn = screen.getByRole("button", { name: /Gerando\.\.\./i })
+    expect(btn).toBeDisabled()
+  })
+
+  it("should not render error section when there is no error", () => {
+    render(
+      <WizardContext.Provider value={makeContext()}>
+        <ExportDietStep />
+      </WizardContext.Provider>
+    )
+
+    expect(screen.queryByText(/Erro ao gerar PDF/)).not.toBeInTheDocument()
+  })
+
+  it("should disable download button when validation fails", () => {
+    // When validatePDFData returns invalid, the button must be disabled
+    vi.mocked(validatePDFData).mockReturnValueOnce({
+      isValid: false,
+      errors: ["Nome do profissional é obrigatório"],
+    })
+
+    render(
+      <WizardContext.Provider value={makeContext()}>
+        <ExportDietStep />
+      </WizardContext.Provider>
+    )
+
+    expect(screen.getByRole("button", { name: /Baixar PDF/i })).toBeDisabled()
+  })
+
+  it("should show 'refeição' (singular) when there is exactly one meal", () => {
+    const context = makeContext()
+
+    const { container } = render(
+      <WizardContext.Provider value={context}>
+        <ExportDietStep />
+      </WizardContext.Provider>
+    )
+
+    expect(container.textContent).toContain("1 refeição no plano")
+  })
+
+  it("should show 'refeições' (plural) when there are multiple meals", () => {
+    const context = makeContext({
+      data: {
+        ...defaultWizardStore,
+        professional: { name: "Dr. João", crn: "CRN123456", logo: "" },
+        patient: { name: "John", age: 30, weight: 80, goal: "LEAN_MASS_GAIN", observations: "" },
+        diet: {
+          meals: [
+            { id: "1", time: "07:00", name: "Breakfast", foods: [{ name: "Eggs", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
+            { id: "2", time: "12:00", name: "Lunch", foods: [{ name: "Chicken", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" }] },
+          ],
+        },
+      },
+    })
+
+    const { container } = render(
+      <WizardContext.Provider value={context}>
+        <ExportDietStep />
+      </WizardContext.Provider>
+    )
+
+    expect(container.textContent).toContain("2 refeições no plano")
   })
 
   it("should show the PDF preview section", () => {

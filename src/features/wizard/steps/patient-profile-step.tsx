@@ -17,6 +17,7 @@ import {
 } from "../types/patient-goal"
 import { useWizardContext } from "../context/wizard-context"
 import { patientProfileSchema, type PatientProfileData } from "../schemas/wizard-schema"
+import { limitIntegerDigits } from "@/lib/masks"
 
 export default function PatientProfileStep() {
   const { data, updateSection, next, prev } = useWizardContext()
@@ -26,6 +27,12 @@ export default function PatientProfileStep() {
     label: getPatientGoalLabel(goal),
   }))
 
+  const initialValues = {
+    ...data.patient,
+    age: data.patient.age === 0 ? undefined : data.patient.age,
+    weight: data.patient.weight === 0 ? undefined : data.patient.weight,
+  }
+
   const {
     register,
     control,
@@ -33,7 +40,7 @@ export default function PatientProfileStep() {
     formState: { errors },
   } = useForm<PatientProfileData>({
     resolver: zodResolver(patientProfileSchema),
-    defaultValues: data.patient,
+    defaultValues: initialValues as any,
   })
 
   const onSubmit = (values: PatientProfileData) => {
@@ -58,9 +65,10 @@ export default function PatientProfileStep() {
           id="age"
           type="number"
           min={1}
-          max={100}
+          max={120}
           label="Idade"
           placeholder="Ex: 30"
+          onInput={(e) => limitIntegerDigits(e, 3)}
           error={errors.age?.message}
           {...register("age", { valueAsNumber: true })}
         />
@@ -74,6 +82,7 @@ export default function PatientProfileStep() {
           label="Peso (kg)"
           placeholder="Ex: 72.5"
           error={errors.weight?.message}
+          onInput={(e) => limitIntegerDigits(e, 3)}
           {...register("weight", { valueAsNumber: true })}
         />
 

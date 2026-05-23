@@ -16,11 +16,31 @@ export interface PDFPatient {
   clinicalNotes?: string
 }
 
+export interface PDFFoodItem {
+  name: string
+  amount_caseira_value: string
+  amount_caseira_unit: string
+  amount_tecnica_value: string
+  amount_tecnica_unit: string
+}
+
 export interface PDFMeal {
   id: string
   title: string
   time: string
-  foods: string
+  foods: PDFFoodItem[]
+}
+
+/**
+ * Formata um alimento para exibição: "Nome — qtd caseira (qtd técnica)"
+ */
+export function formatFoodDisplay(food: PDFFoodItem): string {
+  const caseira = [food.amount_caseira_value, food.amount_caseira_unit].filter(Boolean).join(" ")
+  const tecnica = [food.amount_tecnica_value, food.amount_tecnica_unit].filter(Boolean).join(" ")
+  if (!caseira && !tecnica) return food.name
+  if (!tecnica) return `${food.name} — ${caseira}`
+  if (!caseira) return `${food.name} (${tecnica})`
+  return `${food.name} — ${caseira} (${tecnica})`
 }
 
 export interface PDFPreviewProps {
@@ -52,7 +72,13 @@ export function mapWizardDataToPDF(wizardData: WizardStore): PDFPreviewProps {
       id: meal.id,
       title: meal.name,
       time: meal.time,
-      foods: meal.foods,
+      foods: meal.foods.map((food) => ({
+        name: food.name,
+        amount_caseira_value: food.amount_caseira_value,
+        amount_caseira_unit: food.amount_caseira_unit,
+        amount_tecnica_value: food.amount_tecnica_value,
+        amount_tecnica_unit: food.amount_tecnica_unit,
+      })),
     })),
     currentDate: formatDateForPDF(new Date()),
     objectiveLabels: PATIENT_GOAL_LABELS,

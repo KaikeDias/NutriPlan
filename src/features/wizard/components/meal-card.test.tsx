@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import MealCard from "@/features/wizard/components/meal-card"
 
+const sampleFoods = [
+  { name: "Ovos e pão integral", amount_caseira_value: "2", amount_caseira_unit: "unidade", amount_tecnica_value: "100", amount_tecnica_unit: "g" },
+]
+
 describe("MealCard", () => {
   it("calls the correct handlers from the main action and icon buttons", async () => {
     const user = userEvent.setup()
@@ -14,7 +18,7 @@ describe("MealCard", () => {
       <MealCard
         name="Café da manhã"
         time="07:30"
-        foods="Ovos e pão integral"
+        foods={sampleFoods}
         onClick={onClick}
         onEditing={onEditing}
         onDelete={onDelete}
@@ -28,5 +32,19 @@ describe("MealCard", () => {
     expect(onClick).toHaveBeenCalledOnce()
     expect(onEditing).toHaveBeenCalledOnce()
     expect(onDelete).toHaveBeenCalledOnce()
+  })
+
+  it("shows +N mais when more than 2 foods", () => {
+    const manyFoods = [
+      { name: "Arroz", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" },
+      { name: "Feijão", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" },
+      { name: "Frango", amount_caseira_value: "", amount_caseira_unit: "", amount_tecnica_value: "", amount_tecnica_unit: "" },
+    ]
+
+    const { container } = render(
+      <MealCard name="Almoço" time="12:00" foods={manyFoods} />
+    )
+
+    expect(container.textContent).toContain("+1 mais")
   })
 })

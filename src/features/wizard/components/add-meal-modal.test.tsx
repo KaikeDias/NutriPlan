@@ -29,11 +29,19 @@ describe("AddMealModal", () => {
     expect(screen.getByText("Nova Refeição")).toBeInTheDocument()
     expect(screen.getByPlaceholderText("Ex: 08:00")).toBeInTheDocument()
     expect(screen.getByPlaceholderText("Ex: Café da manhã")).toBeInTheDocument()
-    expect(
-      screen.getByPlaceholderText(
-        "Ex: 2 fatias de pão integral, 1 ovo cozido, 1 xícara de café"
-      )
-    ).toBeInTheDocument()
+    expect(screen.getByPlaceholderText("Ex: Pão integral")).toBeInTheDocument()
+    expect(screen.getByText("Adicionar alimento")).toBeInTheDocument()
+  })
+
+  it("renders editing title when editingMeal is provided", () => {
+    const editingMeal: Meal = {
+      id: "meal-1",
+      name: "Almoço",
+      time: "12:00",
+      foods: [{ name: "Arroz", amount_caseira_value: "1", amount_caseira_unit: "concha", amount_tecnica_value: "100", amount_tecnica_unit: "g" }],
+    }
+    renderModal({ editingMeal })
+    expect(screen.getByText("Editar Refeição")).toBeInTheDocument()
   })
 
   it("calls onSave with valid payload on submit", async () => {
@@ -42,11 +50,11 @@ describe("AddMealModal", () => {
 
     const timeInput = document.querySelector('input[name="time"]') as HTMLInputElement
     const nameInput = document.querySelector('input[name="name"]') as HTMLInputElement
-    const foodsInput = screen.getByLabelText("Alimentos") as HTMLTextAreaElement
+    const foodNameInput = document.querySelector('input[name="foods.0.name"]') as HTMLInputElement
 
     fireEvent.change(timeInput, { target: { value: "08:30" } })
     await user.type(nameInput, "Café da manhã")
-    await user.type(foodsInput, "2 ovos e café")
+    await user.type(foodNameInput, "Ovo cozido")
 
     await user.click(screen.getByRole("button", { name: "Salvar refeição" }))
 
@@ -54,7 +62,9 @@ describe("AddMealModal", () => {
       expect(props.onSave).toHaveBeenCalledWith({
         name: "Café da manhã",
         time: "08:30",
-        foods: "2 ovos e café",
+        foods: expect.arrayContaining([
+          expect.objectContaining({ name: "Ovo cozido" }),
+        ]),
       })
     })
   })
@@ -64,18 +74,38 @@ describe("AddMealModal", () => {
       id: "meal-1",
       name: "Almoço",
       time: "12:00",
-      foods: "Arroz e frango",
+      foods: [
+        {
+          name: "Arroz e frango",
+          amount_caseira_value: "1",
+          amount_caseira_unit: "concha",
+          amount_tecnica_value: "100",
+          amount_tecnica_unit: "g",
+        },
+      ],
     }
 
     renderModal({ editingMeal })
 
     const timeInput = document.querySelector('input[name="time"]') as HTMLInputElement
     const nameInput = document.querySelector('input[name="name"]') as HTMLInputElement
-    const foodsInput = screen.getByLabelText("Alimentos") as HTMLTextAreaElement
+    const foodNameInput = document.querySelector('input[name="foods.0.name"]') as HTMLInputElement
 
     expect(nameInput.value).toBe("Almoço")
     expect(timeInput.value).toBe("12:00")
-    expect(foodsInput.value).toBe("Arroz e frango")
+    expect(foodNameInput.value).toBe("Arroz e frango")
+  })
+
+  it("adds a new food row when Adicionar alimento is clicked", async () => {
+    const user = userEvent.setup()
+    renderModal()
+
+    expect(document.querySelectorAll('input[name^="foods."]').length).toBeGreaterThan(0)
+
+    await user.click(screen.getByRole("button", { name: "Adicionar alimento" }))
+
+    const foodNameInputs = document.querySelectorAll('input[name$=".name"]')
+    expect(foodNameInputs.length).toBeGreaterThanOrEqual(2)
   })
 
   it("discards draft on cancel", async () => {
@@ -117,18 +147,19 @@ describe("AddMealModal", () => {
     expect(nameInput.value).toBe("")
   })
 
-  it("shows validation errors when submitted empty", async () => {
+  it("shows validation error when food name is empty on submit", async () => {
     const user = userEvent.setup()
-    const { props } = renderModal()
+    renderModal()
+
+    const timeInput = document.querySelector('input[name="time"]') as HTMLInputElement
+    const nameInput = document.querySelector('input[name="name"]') as HTMLInputElement
+    fireEvent.change(timeInput, { target: { value: "08:00" } })
+    await user.type(nameInput, "Café da manhã")
 
     await user.click(screen.getByRole("button", { name: "Salvar refeição" }))
 
     await waitFor(() => {
-      expect(screen.getByText("Nome da refeição é obrigatório")).toBeInTheDocument()
-      expect(screen.getByText("Horário é obrigatório")).toBeInTheDocument()
-      expect(screen.getByText("Alimentos são obrigatórios")).toBeInTheDocument()
+      expect(screen.getByText("Nome do alimento é obrigatório")).toBeInTheDocument()
     })
-
-    expect(props.onSave).not.toHaveBeenCalled()
   })
 })

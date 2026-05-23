@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWizardContext } from "../context/wizard-context";
@@ -14,10 +13,7 @@ import {
 
 export default function ExportDietStep() {
   const { data, prev, goToStep, updateSection } = useWizardContext();
-  const pdfRef = useRef<HTMLDivElement>(null);
-  const { downloadPDF, loading, error, resetError } = usePDFExport(
-    pdfRef as React.RefObject<HTMLDivElement | null>
-  );
+  const { downloadPDF, loading, error, resetError } = usePDFExport();
 
   const validation = validatePDFData(data);
 
@@ -31,7 +27,7 @@ export default function ExportDietStep() {
     }
 
     const filename = generatePDFFilename(data.patient.name);
-    await downloadPDF(filename);
+    await downloadPDF(filename, mapWizardDataToPDF(data));
   };
 
   const handleNewPlanClick = () => {
@@ -145,9 +141,6 @@ export default function ExportDietStep() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", left: "-99999px", top: 0, width: "210mm", pointerEvents: "none" }}>
-        <PDFPreview ref={pdfRef} {...mapWizardDataToPDF(data)} />
-      </div>
     </div>
   )
 }
