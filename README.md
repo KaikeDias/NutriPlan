@@ -97,8 +97,6 @@ A aplicação funciona em um formulário dividido em 4 etapas (wizard), então t
 - `class-variance-authority`
 - `tailwind-merge`
 
-> Bibliotecas como `html2canvas`, `html2pdf.js` e `jspdf` aparecem nas dependências, mas hoje a geração do PDF está sendo feita com `@react-pdf/renderer`.
-
 ---
 
 ## 🏗️ Arquitetura Frontend
