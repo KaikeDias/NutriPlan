@@ -8,6 +8,7 @@
 	<a href="#-visao-geral">Visão geral</a> •
 	<a href="#-funcionalidades">Funcionalidades</a> •
 	<a href="#-tecnologias">Tecnologias</a> •
+	<a href="#arquitetura">Arquitetura</a> •
 	<a href="#-estrutura-de-pastas">Pastas</a> •
 	<a href="#instalacao">Instalação</a> •
 	<a href="#-scripts-disponiveis">Scripts</a> •
@@ -99,7 +100,7 @@ A aplicação funciona em um formulário dividido em 4 etapas (wizard), então t
 
 ---
 
-## 🏗️ Arquitetura Frontend
+<h2 id="arquitetura">🏗️ Arquitetura Frontend</h2>
 
 ### Visão geral
 
@@ -163,9 +164,9 @@ src/
 
 ---
 
-<h2 id="instalacao">⚙️ Instalacao</h2>
+<h2 id="instalacao">⚙️ Instalação</h2>
 
-### Pre-requisitos
+### Pre-requisítos
 
 - Node.js instalado
 - `pnpm` recomendado
@@ -180,7 +181,7 @@ Se preferir, também é possível usar outro gerenciador compatível com o `pack
 
 ---
 
-## 🔧 Configuracao
+## 🔧 Configuração
 
 Hoje não existe arquivo `.env` para a aplicação frontend.
 
@@ -274,28 +275,10 @@ A geração de PDF já faz parte do fluxo principal da aplicação.
 
 ---
 
-## 📱 Responsividade
-
-O layout já usa utilitários e estruturas que ajudam bastante na adaptação entre tamanhos de tela, como:
-
-- containers com largura máxima controlada;
-- grids para cards de resumo;
-- áreas com `overflow-y-auto` para conteúdo extenso;
-- componentes de formulário baseados em layout fluido.
-
-Não existe uma documentação específica sobre breakpoints, mas a interface já segue uma base responsiva com Tailwind.
-
----
-
 ## 🧪 Testes
 
 Há testes automatizados cobrindo componentes, hooks, schemas, utilitários e partes do fluxo principal.
 
-### Ferramentas identificadas
-
-- Vitest
-- Testing Library
-- JSDOM
 
 ### Cobertura
 
